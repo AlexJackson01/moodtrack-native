@@ -2,28 +2,32 @@ import { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, ScrollView, Image, Linking, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-// import AppLoading from 'expo';
-import { useFonts, RobotoSlab_300Light, RobotoSlab_400Regular } from '../node_modules/@expo-google-fonts/roboto-slab';
+import { useFonts } from 'expo-font';
+// import Light from '../assets/RobotoSlab_Light.ttf';
 
 export default function LandingPage() {
 
-  let [fontsLoaded] = useFonts({
-    RobotoSlab_300Light,
-    RobotoSlab_400Regular,
-  });
+    const [loaded] = useFonts({
+        RobotoSlabLight: require('../assets/fonts/RobotoSlab-Light.ttf'),
+        RobotoSlabReg: require('../assets/fonts/RobotoSlab-Regular.ttf')
+    });
 
-  useEffect(() => {
+    if (!loaded) {
+        return null;
+      }
 
-    getToken();
+//   useEffect(() => {
+
+//     getToken();
   
-  }, [])
+//   }, [])
 
-const getToken = () => {
-let urlParams = new URLSearchParams(window.location.hash.replace("#", "?"));
-let token = urlParams.get("access_token");
-window.localStorage.setItem("token", token);
-setToken(token);
-}
+// const getToken = () => {
+// let urlParams = new URLSearchParams(window.location.hash.replace("#", "?"));
+// let token = urlParams.get("access_token");
+// window.localStorage.setItem("token", token);
+// setToken(token);
+// }
 
 //   if (!fontsLoaded) {
 //     return <AppLoading />;
@@ -82,10 +86,10 @@ const styles = StyleSheet.create({
     // boxShadow: '1px 1px 0px #C7D0D8, 2px 2px 0px #C7D0D8, 3px 3px 0px #C7D0D8, 4px 4px 0px #C7D0D8, 5px 5px 0px #C7D0D8, 6px 6px 0px #C7D0D8, 7px 7px 0px #C7D0D8',
   },
   titleText: {
-    padding: 20,
+    padding: 15,
     textAlign: 'center',
     fontSize: 18,
-    fontFamily: 'Roboto'
+    fontFamily: 'RobotoSlabLight'
   },
   moodtrackLogo: {
     height: 180,
@@ -99,7 +103,7 @@ const styles = StyleSheet.create({
   secondaryText: {
     fontSize: 16,
     marginTop: 20,
-    fontFamily: 'Roboto'
+    fontFamily: 'RobotoSlabReg'
   },
   spotifyLogo: {
     height: 40,
