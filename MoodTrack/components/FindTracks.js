@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useFonts } from 'expo-font';
 // import Light from '../assets/RobotoSlab_Light.ttf';
 
-export default function LandingPage({ navigation }) {
+export default function FindTracks() {
 
     const [loaded] = useFonts({
         RobotoSlabLight: require('../assets/fonts/RobotoSlab-Light.ttf'),
@@ -16,28 +16,6 @@ export default function LandingPage({ navigation }) {
         return null;
       }
 
-//   useEffect(() => {
-
-//     getToken();
-  
-//   }, [])
-
-// const getToken = () => {
-// let urlParams = new URLSearchParams(window.location.hash.replace("#", "?"));
-// let token = urlParams.get("access_token");
-// window.localStorage.setItem("token", token);
-// setToken(token);
-// }
-
-//   if (!fontsLoaded) {
-//     return <AppLoading />;
-//   }
-
-const CLIENT_ID = '32724f1f215c486993fb9e886fdce8e1';
-const REDIRECT_URI = 'http://localhost:19002';
-const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
-const RESPONSE_TYPE = 'token';
-const SCOPES = "streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state";
 
   return (
     <LinearGradient colors={['#7e71f5', '#9f6ad6']} style={styles.body}>
@@ -48,7 +26,7 @@ const SCOPES = "streaming%20user-read-email%20user-read-private%20user-library-r
             <Text style={styles.titleText}>Take time to reflect and discover tracks to fit any mood</Text>
             <Image style={styles.brainIcon} source={require('../images/musicbrain.png')} />
             <Text style={styles.secondaryText}>Login with:</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Tracks')}>
+            <TouchableOpacity onPress={() => Linking.openURL('http://google.com')}>
                 <Image style={styles.spotifyLogo} source={require('../images/Spotify_Logo.png')} />
             </TouchableOpacity>
             <StatusBar style="auto" />
