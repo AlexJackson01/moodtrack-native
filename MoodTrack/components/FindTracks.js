@@ -31,10 +31,10 @@ export default function FindTracks() {
 
   return (
     <LinearGradient colors={['#7e71f5', '#9f6ad6']} style={styles.body}>
-            {!showTrack && <Image style={styles.moodtrackLogoSmall} source={require('../images/MoodTrack_logo.png')} />}
+            <Image style={styles.moodtrackLogoSmall} source={require('../images/MoodTrack_logo.png')} />
               <View style={styles.container}>
                 {!showTrack && (
-                    <View style={styles.centreSliders}>
+                    <View style={styles.centreContent}>
                     <Text style={styles.moodText}>How are you feeling today?</Text>
                     <Slider
                         style={{width: 220, height: 40, marginBottom: 10}}
@@ -71,6 +71,21 @@ export default function FindTracks() {
                     </Button>
                     </View>
                 )}
+
+
+                {showTrack && (
+                    <View style={styles.centreContent}>
+                    <Text style={styles.moodText}>MoodTrack of the day</Text>
+                    <Image style={{height: 150, width: 150}} source={{uri: 'https://i.scdn.co/image/ab67616d00001e024d1a7a3e5043173883653ffc'}} />
+                    <Text style={styles.trackText}>Sweet Caroline by Neil Diamond</Text>
+                    <Text style={styles.trackText}>Spotify Player here</Text>
+                    <Text style={styles.secondaryText}>Listen on</Text>
+                    <TouchableOpacity onPress={() => navigation.navigate('LandingPage')}>
+                        <Image style={styles.spotifyLogo} source={require('../images/Spotify_Logo.png')} />
+                    </TouchableOpacity>
+                    </View>
+                )}
+
                 </View> 
                 </LinearGradient>   
               
@@ -91,7 +106,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFCEF',
     marginTop: 100,
-    marginBottom: 100,
+    // marginBottom: 100,
+    height: 500,
     width: '85%',
     alignItems: 'center',
     justifyContent: 'center',
@@ -103,7 +119,7 @@ const styles = StyleSheet.create({
     elevation: 8,
     // boxShadow: '1px 1px 0px #C7D0D8, 2px 2px 0px #C7D0D8, 3px 3px 0px #C7D0D8, 4px 4px 0px #C7D0D8, 5px 5px 0px #C7D0D8, 6px 6px 0px #C7D0D8, 7px 7px 0px #C7D0D8',
   },
-  centreSliders: {
+  centreContent: {
     margin: 40,
     flex: 1,
     alignItems: 'center',
@@ -114,6 +130,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 18,
     fontFamily: 'RobotoSlabLight'
+  },
+  trackText: {
+    // padding: 15,
+    // marginBottom: 20,
+    marginTop: 20,
+    textAlign: 'center',
+    fontSize: 15,
+    fontFamily: 'RobotoSlabReg'
   },
   moodtrackLogoSmall: {
     height: 120,
@@ -127,7 +151,7 @@ const styles = StyleSheet.create({
     width: 50
   },
   secondaryText: {
-    fontSize: 16,
+    fontSize: 12,
     marginTop: 20,
     fontFamily: 'RobotoSlabReg'
   },
