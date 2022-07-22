@@ -12,6 +12,7 @@ import { Button } from 'react-native-paper';
 
 export default function FindTracks() {
 
+    const [showTrack, setShowTrack] = useState(false);
     const [dance, setDance] = useState("");
     const [energy, setEnergy] = useState("");
     const [valence, setValence] = useState("");
@@ -30,50 +31,49 @@ export default function FindTracks() {
 
   return (
     <LinearGradient colors={['#7e71f5', '#9f6ad6']} style={styles.body}>
-    <View style={{ flex: 1 }}>
-        <View style={styles.body}>
-        <Image style={styles.moodtrackLogoSmall} source={require('../images/MoodTrack_logo.png')} />
-          <View style={styles.container}>
-            <Text style={styles.titleText}>How are you feeling today?</Text>
-                <Slider
-                    style={{width: 200, height: 40}}
-                    minimumValue={0}
-                    maximumValue={10}
-                    step={1}
-                    minimumTrackTintColor="#7E71F5"
-                    thumbTintColor="#7E71F5"
-                    maximumTrackTintColor="#000000"
-                    onValueChange={value => setDance(value)}
-                />
-            <Text style={styles.secondaryText}>{valence}</Text>
-                <Slider
-                    style={{width: 200, height: 40}}
-                    minimumValue={0}
-                    maximumValue={10}
-                    step={1}
-                    minimumTrackTintColor="#7E71F5"
-                    thumbTintColor="#7E71F5"
-                    maximumTrackTintColor="#000000"
-                    onValueChange={value => setEnergy(value)}
-                />
-                <Slider
-                    style={{width: 200, height: 40}}
-                    minimumValue={0}
-                    maximumValue={10}
-                    step={1}
-                    minimumTrackTintColor="#7E71F5"
-                    thumbTintColor="#7E71F5"
-                    maximumTrackTintColor="#000000"
-                    onValueChange={value => setValence(value)}
-                />
-                <Button icon="music" style={{marginTop: 50}} labelStyle={{fontSize: 12}} uppercase={false} color="#8C52FF" mode="contained" onPress={() => console.log('Pressed')}>
-                    Get Today's MoodTrack
-                </Button>
-            <StatusBar style="auto" />
-          </View>
-        </View>
-    </View>
-    </LinearGradient>
+            {!showTrack && <Image style={styles.moodtrackLogoSmall} source={require('../images/MoodTrack_logo.png')} />}
+              <View style={styles.container}>
+                {!showTrack && (
+                    <View style={styles.centreSliders}>
+                    <Text style={styles.moodText}>How are you feeling today?</Text>
+                    <Slider
+                        style={{width: 220, height: 40, marginBottom: 10}}
+                        minimumValue={0}
+                        maximumValue={10}
+                        step={1}
+                        minimumTrackTintColor="#7E71F5"
+                        thumbTintColor="#7E71F5"
+                        maximumTrackTintColor="#000000"
+                        onValueChange={value => setDance(value)}
+                    />
+                    <Slider
+                        style={{width: 220, height: 40, marginBottom: 10}}
+                        minimumValue={0}
+                        maximumValue={10}
+                        step={1}
+                        minimumTrackTintColor="#7E71F5"
+                        thumbTintColor="#7E71F5"
+                        maximumTrackTintColor="#000000"
+                        onValueChange={value => setEnergy(value)}
+                    />
+                    <Slider
+                        style={{width: 220, height: 40, marginBottom: 10}}
+                        minimumValue={0}
+                        maximumValue={10}
+                        step={1}
+                        minimumTrackTintColor="#7E71F5"
+                        thumbTintColor="#7E71F5"
+                        maximumTrackTintColor="#000000"
+                        onValueChange={value => setValence(value)}
+                    />
+                    <Button icon="music" style={{marginTop: 50}} labelStyle={{fontFamily: 'RobotoSlabReg', fontSize: 12}} uppercase={false} color="#8C52FF" mode="contained" onPress={() => setShowTrack(true)} >
+                        Get Today's MoodTrack
+                    </Button>
+                    </View>
+                )}
+                </View> 
+                </LinearGradient>   
+              
 
 
   );
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFCEF',
     marginTop: 100,
     marginBottom: 100,
-    width: '98%',
+    width: '85%',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 20,
@@ -103,8 +103,14 @@ const styles = StyleSheet.create({
     elevation: 8,
     // boxShadow: '1px 1px 0px #C7D0D8, 2px 2px 0px #C7D0D8, 3px 3px 0px #C7D0D8, 4px 4px 0px #C7D0D8, 5px 5px 0px #C7D0D8, 6px 6px 0px #C7D0D8, 7px 7px 0px #C7D0D8',
   },
-  titleText: {
+  centreSliders: {
+    margin: 40,
+    flex: 1,
+    alignItems: 'center',
+  },
+  moodText: {
     padding: 15,
+    marginBottom: 20,
     textAlign: 'center',
     fontSize: 18,
     fontFamily: 'RobotoSlabLight'
