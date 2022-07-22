@@ -11,7 +11,7 @@ import { Button } from 'react-native-paper';
 
 // import Light from '../assets/RobotoSlab_Light.ttf';
 
-export default function FindTracks({ navigation }) {
+export default function FindTracks({ navigation, token }) {
 
     const [showTrack, setShowTrack] = useState(false);
     const [dance, setDance] = useState("");
@@ -36,6 +36,7 @@ export default function FindTracks({ navigation }) {
               <View style={styles.container}>
                 {!showTrack && (
                     <View style={styles.centreContent}>
+                        <Text>{token}</Text>
                     <Text style={styles.moodText}>How are you feeling today?</Text>
                     <View style={{display: 'flex', flexDirection: 'row'}}>
                     <Emoji name="video_game" style={{fontSize: 30}} />
@@ -66,7 +67,7 @@ export default function FindTracks({ navigation }) {
                     <Emoji name="swimmer" style={{fontSize: 30}} />
                     </View>
                     <View style={{display: 'flex', flexDirection: 'row'}}>
-                    <Emoji name="joy" style={{fontSize: 30}} />
+                    <Emoji name="pensive" style={{fontSize: 30}} />
                     <Slider
                         style={{width: 220, height: 40, marginBottom: 20}}
                         minimumValue={0}
@@ -77,7 +78,7 @@ export default function FindTracks({ navigation }) {
                         maximumTrackTintColor="#000000"
                         onValueChange={value => setValence(value)}
                     />
-                    <Emoji name="sob" style={{fontSize: 30}} />
+                    <Emoji name="grin" style={{fontSize: 30}} />
                     </View>
 
                     <Button icon="music" style={{marginTop: 50}} labelStyle={{fontFamily: 'RobotoSlabReg', fontSize: 12}} uppercase={false} color="#8C52FF" mode="contained" onPress={() => setShowTrack(true)} >

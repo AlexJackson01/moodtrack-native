@@ -21,13 +21,16 @@ export default function App({ navigation }) {
   return (
     <NavigationContainer>
       <PaperProvider>
-        <Stack.Navigator initialRouteName='Login'>
-          <Stack.Screen name='Login' options={{cardStyleInterpolator: CardStyleInterpolators.forFadeFromBottomAndroid}}>
+        <Stack.Navigator>
+          {!token ? (
+            <Stack.Screen name='Login' options={{cardStyleInterpolator: CardStyleInterpolators.forFadeFromBottomAndroid}}>
             {(props) => <LandingPage {...props} token={token} setToken={setToken} setTrackList={setTrackList} />}
-          </Stack.Screen>        
-          <Stack.Screen name='Tracks' options={{cardStyleInterpolator: CardStyleInterpolators.forFadeFromBottomAndroid}}>
+            </Stack.Screen> 
+          ) : (
+            <Stack.Screen name='Tracks' options={{cardStyleInterpolator: CardStyleInterpolators.forFadeFromBottomAndroid}}>
             {(props) => <FindTracks {...props} token={token} setToken={setToken} />}
           </Stack.Screen>
+          )}
         </Stack.Navigator> 
       </PaperProvider>  
     </NavigationContainer>

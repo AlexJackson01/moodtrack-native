@@ -1,11 +1,62 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, Linking, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, KeyboardAvoidingView, TouchableOpacity, AppState } from 'react-native';
+import { ResponseType, useAuthRequest, makeRedirectUri } from 'expo-auth-session';
+// import { AuthSession } from 'expo';
+import axios from "axios";
+import * as WebBrowser from "expo-web-browser";
+import Constants from "expo-constants";
 import { LinearGradient } from 'expo-linear-gradient';
 import { useFonts } from 'expo-font';
 // import Light from '../assets/RobotoSlab_Light.ttf';
 
-export default function LandingPage({ navigation }) {
+const discovery = {
+    authorizationEndpoint: 
+    "https://accounts.spotify.com/authorize",
+    tokenEndpoint: 
+    "https://accounts.spotify.com/api/token",
+  };
+
+
+export default function LandingPage({ navigation, setToken, token }) {
+
+      const [request, response, promptAsync] = 
+      useAuthRequest(
+        {
+          responseType: ResponseType.Token,
+          clientId: "32724f1f215c486993fb9e886fdce8e1",
+          scopes: [ 
+            "user-read-playback-state",
+            "user-modify-playback-state",
+            "streaming",
+            "user-read-email",
+            "user-read-private",
+            "user-library-read",
+            "user-library-modify"
+          ],
+          // In order to follow the "Authorization Code Flow" 
+          // to fetch token after authorizationEndpoint
+          // this must be set to false
+          usePKCE: false,
+          redirectUri: "exp://192.168.1.90:19000/",
+        },
+        discovery
+      );
+      useEffect(() => {
+        if (response?.type === "success") {
+          const { access_token } = response.params;
+          setToken(access_token);
+        }
+
+        const emitter = new EventEmitter();
+
+        const subscription = emitter.addListener('eventname', () => {});
+        
+        subscription.remove(); // Removes the subscription
+        
+
+      }, [response]);
+
 
     const [loaded] = useFonts({
         RobotoSlabLight: require('../assets/fonts/RobotoSlab-Light.ttf'),
@@ -14,7 +65,9 @@ export default function LandingPage({ navigation }) {
 
     if (!loaded) {
         return null;
-      }
+    }
+
+
 
 //   useEffect(() => {
 
@@ -33,12 +86,6 @@ export default function LandingPage({ navigation }) {
 //     return <AppLoading />;
 //   }
 
-const CLIENT_ID = '32724f1f215c486993fb9e886fdce8e1';
-const REDIRECT_URI = 'http://localhost:19002';
-const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
-const RESPONSE_TYPE = 'token';
-const SCOPES = "streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state";
-
   return (
     <LinearGradient colors={['#7e71f5', '#9f6ad6']} style={styles.body}>
     <View style={{ flex: 1 }}>
@@ -48,7 +95,7 @@ const SCOPES = "streaming%20user-read-email%20user-read-private%20user-library-r
             <Text style={styles.titleText}>Take time to reflect and discover tracks to fit any mood</Text>
             <Image style={styles.brainIcon} source={require('../images/musicbrain.png')} />
             <Text style={styles.secondaryText}>Login with:</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Tracks')}>
+            <TouchableOpacity onPress={() => {promptAsync();}}>
                 <Image style={styles.spotifyLogo} source={require('../images/Spotify_Logo.png')} />
             </TouchableOpacity>
             <StatusBar style="auto" />
