@@ -11,7 +11,7 @@ import { Button } from 'react-native-paper';
 
 // import Light from '../assets/RobotoSlab_Light.ttf';
 
-export default function FindTracks({ navigation, token }) {
+export default function FindTracks({ navigation, token, setToken }) {
 
     const [showTrack, setShowTrack] = useState(false);
     const [dance, setDance] = useState("");
@@ -26,17 +26,27 @@ export default function FindTracks({ navigation, token }) {
 
     if (!loaded) {
         return null;
-      }
+    }
+
+    const logout = () => {
+        setToken("");
+        // navigation.navigate('Login');
+    }
 
 
 
   return (
     <LinearGradient colors={['#7e71f5', '#9f6ad6']} style={styles.body}>
             <Image style={styles.moodtrackLogoSmall} source={require('../images/MoodTrack_logo.png')} />
+            <View style={{position: 'absolute', top: 5, right: 5}}>
+                <TouchableOpacity onPress={() => logout()}>
+                    <Button color="white" uppercase={false} style={{color: 'white'}}>Logout</Button>
+                </TouchableOpacity>
+                </View>
               <View style={styles.container}>
                 {!showTrack && (
                     <View style={styles.centreContent}>
-                        <Text>{token}</Text>
+                        {/* <Text>{token}</Text> */}
                     <Text style={styles.moodText}>How are you feeling today?</Text>
                     <View style={{display: 'flex', flexDirection: 'row'}}>
                     <Emoji name="video_game" style={{fontSize: 30}} />
@@ -174,5 +184,18 @@ const styles = StyleSheet.create({
     height: 40,
     width: 130,
     marginTop: 10
+  },
+  logout: {
+    backgroundColor: 'transparent',
+    color: 'white',
+    fontFamily: 'RobotoSlabReg',
+    fontSize: 20,
+    textAlign: 'center',
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    margin: 20,
+    border: 'none',
+    marginBottom: -300
   }
 });

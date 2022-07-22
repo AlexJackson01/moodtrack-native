@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, KeyboardAvoidingView, TouchableOpacity, AppState } from 'react-native';
+import EventEmitter from "react-native/Libraries/vendor/emitter/EventEmitter";
 import { ResponseType, useAuthRequest, makeRedirectUri } from 'expo-auth-session';
 // import { AuthSession } from 'expo';
 import axios from "axios";
@@ -52,7 +53,7 @@ export default function LandingPage({ navigation, setToken, token }) {
 
         const subscription = emitter.addListener('eventname', () => {});
         
-        subscription.remove(); // Removes the subscription
+        subscription.remove(); 
         
 
       }, [response]);
