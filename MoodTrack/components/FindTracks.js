@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, Linking, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import Emoji from 'react-native-emoji';
 import { useFonts } from 'expo-font';
 import Slider from '@react-native-community/slider';
 import { Button } from 'react-native-paper';
@@ -10,7 +11,7 @@ import { Button } from 'react-native-paper';
 
 // import Light from '../assets/RobotoSlab_Light.ttf';
 
-export default function FindTracks() {
+export default function FindTracks({ navigation }) {
 
     const [showTrack, setShowTrack] = useState(false);
     const [dance, setDance] = useState("");
@@ -36,8 +37,10 @@ export default function FindTracks() {
                 {!showTrack && (
                     <View style={styles.centreContent}>
                     <Text style={styles.moodText}>How are you feeling today?</Text>
+                    <View style={{display: 'flex', flexDirection: 'row'}}>
+                    <Emoji name="video_game" style={{fontSize: 30}} />
                     <Slider
-                        style={{width: 220, height: 40, marginBottom: 10}}
+                        style={{width: 220, height: 40, marginBottom: 20}}
                         minimumValue={0}
                         maximumValue={10}
                         step={1}
@@ -46,8 +49,12 @@ export default function FindTracks() {
                         maximumTrackTintColor="#000000"
                         onValueChange={value => setDance(value)}
                     />
+                    <Emoji name="dancer" style={{fontSize: 30}} />
+                    </View>
+                    <View style={{display: 'flex', flexDirection: 'row'}}>
+                    <Emoji name="bed" style={{fontSize: 30}} />
                     <Slider
-                        style={{width: 220, height: 40, marginBottom: 10}}
+                        style={{width: 220, height: 40, marginBottom: 20}}
                         minimumValue={0}
                         maximumValue={10}
                         step={1}
@@ -56,8 +63,12 @@ export default function FindTracks() {
                         maximumTrackTintColor="#000000"
                         onValueChange={value => setEnergy(value)}
                     />
+                    <Emoji name="swimmer" style={{fontSize: 30}} />
+                    </View>
+                    <View style={{display: 'flex', flexDirection: 'row'}}>
+                    <Emoji name="joy" style={{fontSize: 30}} />
                     <Slider
-                        style={{width: 220, height: 40, marginBottom: 10}}
+                        style={{width: 220, height: 40, marginBottom: 20}}
                         minimumValue={0}
                         maximumValue={10}
                         step={1}
@@ -66,6 +77,9 @@ export default function FindTracks() {
                         maximumTrackTintColor="#000000"
                         onValueChange={value => setValence(value)}
                     />
+                    <Emoji name="sob" style={{fontSize: 30}} />
+                    </View>
+
                     <Button icon="music" style={{marginTop: 50}} labelStyle={{fontFamily: 'RobotoSlabReg', fontSize: 12}} uppercase={false} color="#8C52FF" mode="contained" onPress={() => setShowTrack(true)} >
                         Get Today's MoodTrack
                     </Button>
@@ -80,7 +94,7 @@ export default function FindTracks() {
                     <Text style={styles.trackText}>Sweet Caroline by Neil Diamond</Text>
                     <Text style={styles.trackText}>Spotify Player here</Text>
                     <Text style={styles.secondaryText}>Listen on</Text>
-                    <TouchableOpacity onPress={() => navigation.navigate('LandingPage')}>
+                    <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                         <Image style={styles.spotifyLogo} source={require('../images/Spotify_Logo.png')} />
                     </TouchableOpacity>
                     </View>
@@ -105,7 +119,7 @@ const styles = StyleSheet.create({
     margin: 40,
     flex: 1,
     backgroundColor: '#FFFCEF',
-    marginTop: 100,
+    marginTop: 90,
     // marginBottom: 100,
     height: 500,
     width: '85%',
