@@ -1,11 +1,21 @@
-import { useEffect } from 'react';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, Linking, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useFonts } from 'expo-font';
+import Slider from '@react-native-community/slider';
+import { Button } from 'react-native-paper';
+
+
 // import Light from '../assets/RobotoSlab_Light.ttf';
 
 export default function FindTracks() {
+
+    const [dance, setDance] = useState("");
+    const [energy, setEnergy] = useState("");
+    const [valence, setValence] = useState("");
+
 
     const [loaded] = useFonts({
         RobotoSlabLight: require('../assets/fonts/RobotoSlab-Light.ttf'),
@@ -17,18 +27,48 @@ export default function FindTracks() {
       }
 
 
+
   return (
     <LinearGradient colors={['#7e71f5', '#9f6ad6']} style={styles.body}>
     <View style={{ flex: 1 }}>
         <View style={styles.body}>
+        <Image style={styles.moodtrackLogoSmall} source={require('../images/MoodTrack_logo.png')} />
           <View style={styles.container}>
-            <Image style={styles.moodtrackLogo} source={require('../images/MoodTrack_logo.png')} />
-            <Text style={styles.titleText}>Take time to reflect and discover tracks to fit any mood</Text>
-            <Image style={styles.brainIcon} source={require('../images/musicbrain.png')} />
-            <Text style={styles.secondaryText}>Login with:</Text>
-            <TouchableOpacity onPress={() => Linking.openURL('http://google.com')}>
-                <Image style={styles.spotifyLogo} source={require('../images/Spotify_Logo.png')} />
-            </TouchableOpacity>
+            <Text style={styles.titleText}>How are you feeling today?</Text>
+                <Slider
+                    style={{width: 200, height: 40}}
+                    minimumValue={0}
+                    maximumValue={10}
+                    step={1}
+                    minimumTrackTintColor="#7E71F5"
+                    thumbTintColor="#7E71F5"
+                    maximumTrackTintColor="#000000"
+                    onValueChange={value => setDance(value)}
+                />
+            <Text style={styles.secondaryText}>{valence}</Text>
+                <Slider
+                    style={{width: 200, height: 40}}
+                    minimumValue={0}
+                    maximumValue={10}
+                    step={1}
+                    minimumTrackTintColor="#7E71F5"
+                    thumbTintColor="#7E71F5"
+                    maximumTrackTintColor="#000000"
+                    onValueChange={value => setEnergy(value)}
+                />
+                <Slider
+                    style={{width: 200, height: 40}}
+                    minimumValue={0}
+                    maximumValue={10}
+                    step={1}
+                    minimumTrackTintColor="#7E71F5"
+                    thumbTintColor="#7E71F5"
+                    maximumTrackTintColor="#000000"
+                    onValueChange={value => setValence(value)}
+                />
+                <Button icon="music" style={{marginTop: 50}} labelStyle={{fontSize: 12}} uppercase={false} color="#8C52FF" mode="contained" onPress={() => console.log('Pressed')}>
+                    Get Today's MoodTrack
+                </Button>
             <StatusBar style="auto" />
           </View>
         </View>
@@ -52,7 +92,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFCEF',
     marginTop: 100,
     marginBottom: 100,
-    width: '85%',
+    width: '98%',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 20,
@@ -69,9 +109,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'RobotoSlabLight'
   },
-  moodtrackLogo: {
-    height: 180,
-    width: 180,
+  moodtrackLogoSmall: {
+    height: 120,
+    width: 120,
+    marginTop: 20,
+    marginBottom: -60,
     padding: 50
   },
   brainIcon: {
