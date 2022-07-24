@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, Linking, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -7,6 +8,7 @@ import Emoji from 'react-native-emoji';
 import { useFonts } from 'expo-font';
 import Slider from '@react-native-community/slider';
 import { Button } from 'react-native-paper';
+import Player from '../components/Player';
 
 
 // import Light from '../assets/RobotoSlab_Light.ttf';
@@ -17,7 +19,104 @@ export default function FindTracks({ navigation, token, setToken }) {
     const [dance, setDance] = useState("");
     const [energy, setEnergy] = useState("");
     const [valence, setValence] = useState("");
+    const [trackList, setTrackList] = useState([null]);
+    const [songRecommendation, setSongRecommendation] = useState([]);
 
+
+
+    const logout = () => {
+        setToken("");
+        // navigation.navigate('Login');
+    }
+
+    const getRandomSearch = () => {
+        const characters = 'abcdefghijklmnopqrstuvwxyz';
+        const randomCharacter = characters.charAt(Math.floor(Math.random() * characters.length));
+        let randomSearch = '%' + randomCharacter + '%';
+        return randomSearch;
+    }
+
+    const getRandomOffset = () => {
+        const randomOffset = Math.floor(Math.random() * 1000);
+        return randomOffset;
+    }
+
+    let tracks = [];
+    let features = [];
+
+    const findTracks = async () => {
+        // window.location.reload();
+
+        // generate random tracks
+        const res = await axios.get("https://api.spotify.com/v1/search", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          params: {
+            type: "track",
+            q: getRandomSearch(),
+            limit: 50,
+            offset: getRandomOffset()
+          }
+        })
+      
+        const data = res.data.tracks.items;
+
+      
+        for (let track of data) {
+          tracks.push({
+            id: track.id,
+            track_name: track.name,
+            artists: track.artists[0].name,
+            uri: track.uri,
+            external: track.external_urls.spotify,
+            image: track.album.images[1].url
+          })
+        }
+
+        // console.log(tracks);
+    
+        // call audio features for random tracks
+        for (let track of tracks) {
+          const res2 = await axios.get(`https://api.spotify.com/v1/audio-features/${track.id}`, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          })
+          features.push(res2.data);
+        }
+
+        console.log(features);
+      
+        let combined = tracks.map((item, i) => Object.assign({}, item, features[i])); // the results from search 1 and 2 are joined together
+        console.log(combined);
+
+        setTrackList(combined);
+
+    }
+
+    const findRecommendation = (e) => {
+        e.preventDefault();
+    
+        const filtered = trackList.filter(function(track) {
+            return (track.danceability >= dance - 0.2 && track.danceability <= dance + 0.2)
+            && (track.energy >= energy - 0.2 && track.energy <= energy + 0.2)
+            && (track.valence >= valence - 0.2 && track.valence <= valence + 0.2)
+        })
+        
+        console.log(filtered);
+         
+        setSongRecommendation(filtered);
+
+        console.log(songRecommendation);
+  
+        setShowTrack(true);    
+    }
+
+    useEffect(() => {
+            findTracks();
+        // setLoading(true);
+    }, [])   
 
     const [loaded] = useFonts({
         RobotoSlabLight: require('../assets/fonts/RobotoSlab-Light.ttf'),
@@ -26,11 +125,6 @@ export default function FindTracks({ navigation, token, setToken }) {
 
     if (!loaded) {
         return null;
-    }
-
-    const logout = () => {
-        setToken("");
-        // navigation.navigate('Login');
     }
 
 
@@ -44,10 +138,11 @@ export default function FindTracks({ navigation, token, setToken }) {
                 </TouchableOpacity>
                 </View>
               <View style={styles.container}>
-                {!showTrack && (
+                {!showTrack && trackList.length >= 1 && (
                     <View style={styles.centreContent}>
                         {/* <Text>{token}</Text> */}
                     <Text style={styles.moodText}>How are you feeling today?</Text>
+                    {/* {trackList.length > 0 && <Text>{trackList[0].track_name}</Text>} */}
                     <View style={{display: 'flex', flexDirection: 'row'}}>
                     <Emoji name="video_game" style={{fontSize: 30}} />
                     <Slider
@@ -58,7 +153,7 @@ export default function FindTracks({ navigation, token, setToken }) {
                         minimumTrackTintColor="#7E71F5"
                         thumbTintColor="#7E71F5"
                         maximumTrackTintColor="#000000"
-                        onValueChange={value => setDance(value)}
+                        onValueChange={value => setDance(value / 10)}
                     />
                     <Emoji name="dancer" style={{fontSize: 30}} />
                     </View>
@@ -72,7 +167,7 @@ export default function FindTracks({ navigation, token, setToken }) {
                         minimumTrackTintColor="#7E71F5"
                         thumbTintColor="#7E71F5"
                         maximumTrackTintColor="#000000"
-                        onValueChange={value => setEnergy(value)}
+                        onValueChange={value => setEnergy(value / 10)}
                     />
                     <Emoji name="swimmer" style={{fontSize: 30}} />
                     </View>
@@ -86,26 +181,28 @@ export default function FindTracks({ navigation, token, setToken }) {
                         minimumTrackTintColor="#7E71F5"
                         thumbTintColor="#7E71F5"
                         maximumTrackTintColor="#000000"
-                        onValueChange={value => setValence(value)}
+                        onValueChange={value => setValence(value / 10)}
                     />
                     <Emoji name="grin" style={{fontSize: 30}} />
                     </View>
 
-                    <Button icon="music" style={{marginTop: 50}} labelStyle={{fontFamily: 'RobotoSlabReg', fontSize: 12}} uppercase={false} color="#8C52FF" mode="contained" onPress={() => setShowTrack(true)} >
+                    <Button icon="music" style={{marginTop: 50}} labelStyle={{fontFamily: 'RobotoSlabReg', fontSize: 12}} uppercase={false} color="#8C52FF" mode="contained" onPress={(e) => findRecommendation(e)} >
                         Get Today's MoodTrack
                     </Button>
                     </View>
                 )}
 
+                {!showTrack && trackList.length === 0 && <Text style={styles.moodText}>Loading today's tracks...</Text>}
+
 
                 {showTrack && (
                     <View style={styles.centreContent}>
                     <Text style={styles.moodText}>MoodTrack of the day</Text>
-                    <Image style={{height: 150, width: 150}} source={{uri: 'https://i.scdn.co/image/ab67616d00001e024d1a7a3e5043173883653ffc'}} />
-                    <Text style={styles.trackText}>Sweet Caroline by Neil Diamond</Text>
-                    <Text style={styles.trackText}>Spotify Player here</Text>
+                    <Image style={{height: 150, width: 150}} source={{uri: songRecommendation[0].image}} />
+                    <Text style={styles.trackText}>{songRecommendation[0].track_name} by {songRecommendation[0].artists}</Text>
+                    {/* <Player token={token} uri={songRecommendation[0].uri} /> */}
                     <Text style={styles.secondaryText}>Listen on</Text>
-                    <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                    <TouchableOpacity onPress={() => navigation.navigate(songRecommendation[0].external)}>
                         <Image style={styles.spotifyLogo} source={require('../images/Spotify_Logo.png')} />
                     </TouchableOpacity>
                     </View>
@@ -161,7 +258,7 @@ const styles = StyleSheet.create({
     // marginBottom: 20,
     marginTop: 20,
     textAlign: 'center',
-    fontSize: 15,
+    fontSize: 13,
     fontFamily: 'RobotoSlabReg'
   },
   moodtrackLogoSmall: {
