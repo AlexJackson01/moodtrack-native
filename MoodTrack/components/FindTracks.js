@@ -8,7 +8,8 @@ import Emoji from 'react-native-emoji';
 import { useFonts } from 'expo-font';
 import Slider from '@react-native-community/slider';
 import { Button } from 'react-native-paper';
-import Player from '../components/Player';
+import SoundPlayer from 'react-native-sound-player'
+
 
 
 // import Light from '../assets/RobotoSlab_Light.ttf';
@@ -16,9 +17,9 @@ import Player from '../components/Player';
 export default function FindTracks({ navigation, token, setToken }) {
 
     const [showTrack, setShowTrack] = useState(false);
-    const [dance, setDance] = useState("");
-    const [energy, setEnergy] = useState("");
-    const [valence, setValence] = useState("");
+    const [dance, setDance] = useState(0.0);
+    const [energy, setEnergy] = useState(0.0);
+    const [valence, setValence] = useState(0.0);
     const [trackList, setTrackList] = useState([null]);
     const [songRecommendation, setSongRecommendation] = useState([]);
 
@@ -61,6 +62,7 @@ export default function FindTracks({ navigation, token, setToken }) {
         })
       
         const data = res.data.tracks.items;
+        console.log(data);
 
       
         for (let track of data) {
@@ -68,13 +70,14 @@ export default function FindTracks({ navigation, token, setToken }) {
             id: track.id,
             track_name: track.name,
             artists: track.artists[0].name,
+            preview: track.preview_url,
             uri: track.uri,
             external: track.external_urls.spotify,
-            image: track.album.images[1].url
+            image: track.album.images[1].url,
           })
         }
 
-        // console.log(tracks);
+        console.log(tracks);
     
         // call audio features for random tracks
         for (let track of tracks) {
@@ -108,10 +111,27 @@ export default function FindTracks({ navigation, token, setToken }) {
          
         setSongRecommendation(filtered);
 
-        console.log(songRecommendation);
+        // console.log(songRecommendation[0].preview);
   
         setShowTrack(true);    
+
+        console.log(token);
+
+        playSong()
+
     }
+
+    const playSong = () => {
+        try {
+            SoundPlayer.playUrl(songRecommendation[0]?.preview)
+          } catch (e) {
+            // alert('Cannot play the file')
+            console.log('cannot play the song file', e)
+          }
+        }
+
+        
+    
 
     useEffect(() => {
             findTracks();
@@ -126,6 +146,7 @@ export default function FindTracks({ navigation, token, setToken }) {
     if (!loaded) {
         return null;
     }
+
 
 
 
@@ -192,15 +213,16 @@ export default function FindTracks({ navigation, token, setToken }) {
                     </View>
                 )}
 
-                {!showTrack && trackList.length === 0 && <Text style={styles.moodText}>Loading today's tracks...</Text>}
+                {/* {!showTrack && trackList !== null && <Text style={styles.moodText}>Loading today's tracks...</Text>} */}
 
 
-                {showTrack && (
+                {showTrack && songRecommendation.length >= 1 && (
                     <View style={styles.centreContent}>
                     <Text style={styles.moodText}>MoodTrack of the day</Text>
                     <Image style={{height: 150, width: 150}} source={{uri: songRecommendation[0].image}} />
                     <Text style={styles.trackText}>{songRecommendation[0].track_name} by {songRecommendation[0].artists}</Text>
-                    {/* <Player token={token} uri={songRecommendation[0].uri} /> */}
+                    {/* <Text style={styles.trackText}>{songRecommendation[0].preview} by {songRecommendation[0].artists}</Text> */}
+
                     <Text style={styles.secondaryText}>Listen on</Text>
                     <TouchableOpacity onPress={() => navigation.navigate(songRecommendation[0].external)}>
                         <Image style={styles.spotifyLogo} source={require('../images/Spotify_Logo.png')} />
