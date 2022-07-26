@@ -8,9 +8,9 @@ import Emoji from 'react-native-emoji';
 import { useFonts } from 'expo-font';
 import Slider from '@react-native-community/slider';
 import { Button } from 'react-native-paper';
-import SoundPlayer from 'react-native-sound-player'
+import { Audio } from 'expo-av';
 
-
+const soundObject = new Audio.Sound();
 
 // import Light from '../assets/RobotoSlab_Light.ttf';
 
@@ -22,6 +22,8 @@ export default function FindTracks({ navigation, token, setToken }) {
     const [valence, setValence] = useState(0.0);
     const [trackList, setTrackList] = useState([null]);
     const [songRecommendation, setSongRecommendation] = useState([]);
+    const [songPreview, setSongPreview] = useState(null);
+    const [playing, setPlaying] = useState(false);
 
 
 
@@ -62,7 +64,7 @@ export default function FindTracks({ navigation, token, setToken }) {
         })
       
         const data = res.data.tracks.items;
-        console.log(data);
+        // console.log(data);
 
       
         for (let track of data) {
@@ -77,7 +79,7 @@ export default function FindTracks({ navigation, token, setToken }) {
           })
         }
 
-        console.log(tracks);
+        // console.log(tracks);
     
         // call audio features for random tracks
         for (let track of tracks) {
@@ -89,10 +91,10 @@ export default function FindTracks({ navigation, token, setToken }) {
           features.push(res2.data);
         }
 
-        console.log(features);
+        // console.log(features);
       
         let combined = tracks.map((item, i) => Object.assign({}, item, features[i])); // the results from search 1 and 2 are joined together
-        console.log(combined);
+        // console.log(combined);
 
         setTrackList(combined);
 
@@ -107,30 +109,39 @@ export default function FindTracks({ navigation, token, setToken }) {
             && (track.valence >= valence - 0.2 && track.valence <= valence + 0.2)
         })
         
-        console.log(filtered);
+        // console.log(filtered);
          
         setSongRecommendation(filtered);
 
+        console.log(songRecommendation)
+
+        setSongPreview(filtered[0].preview);
+
         // console.log(songRecommendation[0].preview);
   
-        setShowTrack(true);    
+        setShowTrack(true);
 
         console.log(token);
 
-        playSong()
+        // playSong();
 
     }
 
-    const playSong = () => {
-        try {
-            SoundPlayer.playUrl(songRecommendation[0]?.preview)
-          } catch (e) {
-            // alert('Cannot play the file')
-            console.log('cannot play the song file', e)
-          }
-        }
+    const playPreview = async () => {
+        setPlaying(true);        
 
-        
+        try {
+            const playbackObject = await Audio.Sound.createAsync(
+                { uri: songPreview },
+                { shouldPlay: true }
+              );
+              playbackObject.playAsync();   
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    
+       
     
 
     useEffect(() => {
@@ -222,8 +233,12 @@ export default function FindTracks({ navigation, token, setToken }) {
                     <Image style={{height: 150, width: 150}} source={{uri: songRecommendation[0].image}} />
                     <Text style={styles.trackText}>{songRecommendation[0].track_name} by {songRecommendation[0].artists}</Text>
                     {/* <Text style={styles.trackText}>{songRecommendation[0].preview} by {songRecommendation[0].artists}</Text> */}
-
-                    <Text style={styles.secondaryText}>Listen on</Text>
+                    {songPreview !== null && (
+                        <TouchableOpacity onPress={() => playPreview()}>
+                            <Button icon="play-pause" style={{marginLeft: 10}} labelStyle={{fontSize: 40}} color="#8C52FF" />
+                        </TouchableOpacity>
+                    )}
+                    <Text style={styles.secondaryText}>Listen in full on</Text>
                     <TouchableOpacity onPress={() => navigation.navigate(songRecommendation[0].external)}>
                         <Image style={styles.spotifyLogo} source={require('../images/Spotify_Logo.png')} />
                     </TouchableOpacity>
@@ -296,13 +311,14 @@ const styles = StyleSheet.create({
   },
   secondaryText: {
     fontSize: 12,
-    marginTop: 20,
+    marginTop: 5,
     fontFamily: 'RobotoSlabReg'
   },
   spotifyLogo: {
     height: 40,
     width: 130,
-    marginTop: 10
+    marginTop: 10,
+    marginBottom: 20
   },
   logout: {
     backgroundColor: 'transparent',
