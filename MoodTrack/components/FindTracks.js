@@ -22,6 +22,7 @@ export default function FindTracks({ navigation, token, setToken, setLatestSongs
     const [songRecommendation, setSongRecommendation] = useState([]);
     const [songPreview, setSongPreview] = useState(null);
     const [playing, setPlaying] = useState(false);
+    const [liked, setLiked] = useState(false);
 
 
 
@@ -117,10 +118,6 @@ export default function FindTracks({ navigation, token, setToken, setLatestSongs
 
         setSongPreview(filtered[0].preview);
 
-        songList.push(songRecommendation[0]);
-
-        setLatestSongs([...latestSongs, songList]);
-
         // console.log(latestSongs[0].track_name);
 
            // setLatestSongs([...latestSongs, songRecommendation])
@@ -128,8 +125,6 @@ export default function FindTracks({ navigation, token, setToken, setLatestSongs
         // console.log(latestSongs);
   
         setShowTrack(true);
-
-        console.log(latestSongs);
 
         // playSong();
 
@@ -149,6 +144,16 @@ export default function FindTracks({ navigation, token, setToken, setLatestSongs
         }
 
     }
+
+    const addToFavourites = (songRecommendation) => {
+      setLiked(true);
+      // setLatestSongs(...latestSongs, songRecommendation[0]);
+      setLatestSongs(state => [...state, songRecommendation]);
+      navigation.navigate('Latest');
+      console.log('hereeeee');
+  }
+
+    
     
        
     
@@ -241,16 +246,16 @@ export default function FindTracks({ navigation, token, setToken, setLatestSongs
                     <Text style={styles.moodText}>MoodTrack of the day</Text>
                     <Image style={{height: 150, width: 150}} source={{uri: songRecommendation[0].image}} />
                     <Text style={styles.trackText}>{songRecommendation[0].track_name} by {songRecommendation[0].artists}</Text>
-                    
-                    <Button icon="music" style={{marginTop: 50}} labelStyle={{fontFamily: 'RobotoSlabReg', fontSize: 12}} uppercase={false} color="#8C52FF" mode="contained" onPress={() => navigation.navigate('Latest')} >
-                        Latest
-                    </Button>
-                    {/* <Text style={styles.trackText}>{songRecommendation[0].preview} by {songRecommendation[0].artists}</Text> */}
+                    <View style={{display: 'flex', flexDirection: 'row'}}>
                     {songPreview !== null && (
                         <TouchableOpacity onPress={() => playPreview()}>
-                            <Button icon="play-pause" style={{marginLeft: 10}} labelStyle={{fontSize: 40}} color="#8C52FF" />
+                            <Button icon="play-pause" style={{marginLeft: 20}} labelStyle={{fontSize: 40}} color="#8C52FF" />
                         </TouchableOpacity>
                     )}
+                        <TouchableOpacity onPress={() => addToFavourites(songRecommendation)}>
+                          <Button icon={!liked ? 'cards-heart-outline' : 'cards-heart'} style={{marginLeft: 20}} labelStyle={{fontSize: 40}} color="#8C52FF" />
+                        </TouchableOpacity>
+                    </View>
                     <Text style={styles.secondaryText}>Listen in full on</Text>
                     <TouchableOpacity onPress={() => navigation.navigate(songRecommendation[0].external)}>
                         <Image style={styles.spotifyLogo} source={require('../images/Spotify_Logo.png')} />

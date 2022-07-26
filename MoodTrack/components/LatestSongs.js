@@ -31,6 +31,10 @@ export default function LatestSongs({ navigation, token, setToken, latestSongs }
         setUser(res.data.display_name);
     }
 
+    const createPlaylist = () => {
+      
+    }
+
     useEffect(() => {
         getUser();
     }, [])
@@ -53,9 +57,16 @@ export default function LatestSongs({ navigation, token, setToken, latestSongs }
                 </View>
                 <View style={styles.centreContent}>
                     {user ? <Text style={styles.moodText}>Latest MoodTracks for {user}</Text> : null}
-                        {latestSongs.length >= 1 ? (latestSongs.map((song, i) => (
-                            <Text style={styles.moodText}>Hello, [{song.artists}]</Text>
+                        {latestSongs ? (latestSongs.map((track) => (
+                          <View style={{display: 'flex', flexDirection: 'row', margin: 10}}>
+                            <Image style={{height: 50, width: 50, marginRight: 5}} source={{uri: track[0].image}} />
+                            <Text key={track.id} style={styles.secondaryText}>{track[0].track_name}{"\n"}{track[0].artists}</Text>
+                            </View>
                     ))) : <Text style={styles.secondaryText}>No songs recommended yet!</Text>}
+
+                    <Button icon="headphones" style={{marginTop: 50}} size={20} labelStyle={{fontFamily: 'RobotoSlabReg', fontSize: 12}} uppercase={false} color="#8C52FF" mode="contained" onPress={(e) => createPlaylist(e)} >
+                        Create MoodTrack Playlist
+                    </Button>
                     </View>
                 </View>
                 </LinearGradient>   
@@ -124,7 +135,7 @@ const styles = StyleSheet.create({
   secondaryText: {
     fontSize: 12,
     marginTop: 5,
-    fontFamily: 'RobotoSlabReg'
+    fontFamily: 'RobotoSlabReg',
   },
   spotifyLogo: {
     height: 40,
