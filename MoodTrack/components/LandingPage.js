@@ -43,10 +43,13 @@ export default function LandingPage({ navigation, setToken, token }) {
         },
         discovery
       );
+
+
       useEffect(() => {
         if (response?.type === "success") {
           const { access_token } = response.params;
           setToken(access_token);
+          navigation.navigate('Tracks');
         }
 
         const emitter = new EventEmitter();

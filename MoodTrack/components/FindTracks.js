@@ -10,11 +10,9 @@ import Slider from '@react-native-community/slider';
 import { Button } from 'react-native-paper';
 import { Audio } from 'expo-av';
 
-const soundObject = new Audio.Sound();
-
 // import Light from '../assets/RobotoSlab_Light.ttf';
 
-export default function FindTracks({ navigation, token, setToken }) {
+export default function FindTracks({ navigation, token, setToken, setLatestSongs, latestSongs }) {
 
     const [showTrack, setShowTrack] = useState(false);
     const [dance, setDance] = useState(0.0);
@@ -29,7 +27,7 @@ export default function FindTracks({ navigation, token, setToken }) {
 
     const logout = () => {
         setToken("");
-        // navigation.navigate('Login');
+        navigation.navigate('Login');
     }
 
     const getRandomSearch = () => {
@@ -46,38 +44,40 @@ export default function FindTracks({ navigation, token, setToken }) {
 
     let tracks = [];
     let features = [];
+    let songList = [];
 
     const findTracks = async () => {
         // window.location.reload();
 
+            const res = await axios.get("https://api.spotify.com/v1/search", {
+                headers: {
+                  Authorization: `Bearer ${token}`
+                },
+                params: {
+                  type: "track",
+                  q: getRandomSearch(),
+                  limit: 50,
+                  offset: getRandomOffset()
+                }
+              })
+            
+              const data = res.data.tracks.items;
+              // console.log(data);
+      
+            
+              for (let track of data) {
+                tracks.push({
+                  id: track.id,
+                  track_name: track.name,
+                  artists: track.artists[0].name,
+                  preview: track.preview_url,
+                  uri: track.uri,
+                  external: track.external_urls.spotify,
+                  image: track.album.images[1].url,
+                })
+              }
         // generate random tracks
-        const res = await axios.get("https://api.spotify.com/v1/search", {
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
-          params: {
-            type: "track",
-            q: getRandomSearch(),
-            limit: 50,
-            offset: getRandomOffset()
-          }
-        })
-      
-        const data = res.data.tracks.items;
-        // console.log(data);
 
-      
-        for (let track of data) {
-          tracks.push({
-            id: track.id,
-            track_name: track.name,
-            artists: track.artists[0].name,
-            preview: track.preview_url,
-            uri: track.uri,
-            external: track.external_urls.spotify,
-            image: track.album.images[1].url,
-          })
-        }
 
         // console.log(tracks);
     
@@ -104,24 +104,32 @@ export default function FindTracks({ navigation, token, setToken }) {
         e.preventDefault();
     
         const filtered = trackList.filter(function(track) {
-            return (track.danceability >= dance - 0.2 && track.danceability <= dance + 0.2)
-            && (track.energy >= energy - 0.2 && track.energy <= energy + 0.2)
-            && (track.valence >= valence - 0.2 && track.valence <= valence + 0.2)
+            return (track.danceability >= dance - 0.3 && track.danceability <= dance + 0.3)
+            && (track.energy >= energy - 0.3 && track.energy <= energy + 0.3)
+            && (track.valence >= valence - 0.3 && track.valence <= valence + 0.3)
         })
         
         // console.log(filtered);
          
         setSongRecommendation(filtered);
 
-        console.log(songRecommendation)
+        // console.log(songRecommendation)
 
         setSongPreview(filtered[0].preview);
 
-        // console.log(songRecommendation[0].preview);
+        songList.push(songRecommendation[0]);
+
+        setLatestSongs([...latestSongs, songList]);
+
+        // console.log(latestSongs[0].track_name);
+
+           // setLatestSongs([...latestSongs, songRecommendation])
+
+        // console.log(latestSongs);
   
         setShowTrack(true);
 
-        console.log(token);
+        console.log(latestSongs);
 
         // playSong();
 
@@ -139,6 +147,7 @@ export default function FindTracks({ navigation, token, setToken }) {
         } catch (error) {
             console.log(error)
         }
+
     }
     
        
@@ -232,6 +241,10 @@ export default function FindTracks({ navigation, token, setToken }) {
                     <Text style={styles.moodText}>MoodTrack of the day</Text>
                     <Image style={{height: 150, width: 150}} source={{uri: songRecommendation[0].image}} />
                     <Text style={styles.trackText}>{songRecommendation[0].track_name} by {songRecommendation[0].artists}</Text>
+                    
+                    <Button icon="music" style={{marginTop: 50}} labelStyle={{fontFamily: 'RobotoSlabReg', fontSize: 12}} uppercase={false} color="#8C52FF" mode="contained" onPress={() => navigation.navigate('Latest')} >
+                        Latest
+                    </Button>
                     {/* <Text style={styles.trackText}>{songRecommendation[0].preview} by {songRecommendation[0].artists}</Text> */}
                     {songPreview !== null && (
                         <TouchableOpacity onPress={() => playPreview()}>
@@ -317,8 +330,7 @@ const styles = StyleSheet.create({
   spotifyLogo: {
     height: 40,
     width: 130,
-    marginTop: 10,
-    marginBottom: 20
+    marginTop: 10
   },
   logout: {
     backgroundColor: 'transparent',
