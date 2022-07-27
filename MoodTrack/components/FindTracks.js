@@ -9,8 +9,11 @@ import { useFonts } from 'expo-font';
 import Slider from '@react-native-community/slider';
 import { Button } from 'react-native-paper';
 import { Audio } from 'expo-av';
+import {useNavigation} from '@react-navigation/native';
 
-export default function FindTracks({ navigation, token, setToken, setLatestSongs, latestSongs }) {
+
+
+export default function FindTracks({ token, setToken, setLatestSongs, latestSongs }) {
 
     const [showTrack, setShowTrack] = useState(false);
     const [dance, setDance] = useState(0.0);
@@ -21,12 +24,13 @@ export default function FindTracks({ navigation, token, setToken, setLatestSongs
     const [songPreview, setSongPreview] = useState(null);
     const [playing, setPlaying] = useState(false);
 
+    const navigation = useNavigation();
 
 
     const logout = () => {
         setToken("");
-        navigation.navigate('Login');
-    }
+        navigation.navigate('Login');    
+      }
 
     const getRandomSearch = () => {
         const characters = 'abcdefghijklmnopqrstuvwxyz';
@@ -100,6 +104,8 @@ export default function FindTracks({ navigation, token, setToken, setLatestSongs
         setSongPreview(filtered[0].preview);
         setLatestSongs([...latestSongs, filtered[0]]);  
         setShowTrack(true);
+        navigation.navigate('Tracks');    
+
 
     }
 
@@ -138,7 +144,7 @@ export default function FindTracks({ navigation, token, setToken, setLatestSongs
   return (
     <LinearGradient colors={['#7e71f5', '#9f6ad6']} style={styles.body}>
             <Image style={styles.moodtrackLogoSmall} source={require('../images/MoodTrack_logo.png')} />
-            <View style={{position: 'absolute', top: 5, right: 5}}>
+            <View style={{position: 'absolute', top: 35, right: 5}}>
                 <TouchableOpacity onPress={() => logout()}>
                     <Button color="white" uppercase={false} style={{color: 'white'}}>Logout</Button>
                 </TouchableOpacity>

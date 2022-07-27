@@ -9,16 +9,21 @@ import { useFonts } from 'expo-font';
 import Slider from '@react-native-community/slider';
 import { Button } from 'react-native-paper';
 import { Audio } from 'expo-av';
+import {useNavigation} from '@react-navigation/native';
+
 
 // import Light from '../assets/RobotoSlab_Light.ttf';
 
-export default function LatestSongs({ navigation, token, setToken, latestSongs }) {
+export default function LatestSongs({ token, setToken, latestSongs }) {
 
     const [user, setUser] = useState("");
 
+    const navigation = useNavigation();
+
     const logout = () => {
         setToken("");
-        navigation.navigate('Login');
+        navigation.navigate('Login');    
+
     }
 
     const getUser = async () => {
@@ -37,14 +42,14 @@ export default function LatestSongs({ navigation, token, setToken, latestSongs }
 
     useEffect(() => {
         getUser();
-    }, [])
+    }, [user])
     
 
 
   return (
     <LinearGradient colors={['#7e71f5', '#9f6ad6']} style={styles.body}>
         <Image style={styles.moodtrackLogoSmall} source={require('../images/MoodTrack_logo.png')} />
-            <View style={{position: 'absolute', top: 5, right: 5}}>
+            <View style={{position: 'absolute', top: 35, right: 5}}>
                 <TouchableOpacity onPress={() => logout()}>
                     <Button color="white" uppercase={false} style={{color: 'white'}}>Logout</Button>
                 </TouchableOpacity>

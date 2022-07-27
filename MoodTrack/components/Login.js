@@ -9,6 +9,8 @@ import * as WebBrowser from "expo-web-browser";
 import Constants from "expo-constants";
 import { LinearGradient } from 'expo-linear-gradient';
 import { useFonts } from 'expo-font';
+import {useNavigation} from '@react-navigation/native';
+
 // import Light from '../assets/RobotoSlab_Light.ttf';
 
 const discovery = {
@@ -19,7 +21,10 @@ const discovery = {
   };
 
 
-export default function LandingPage({ navigation, setToken, token }) {
+export default function Login({ setToken, token }) {
+
+  const navigation = useNavigation();
+
 
       const [request, response, promptAsync] = 
       useAuthRequest(
@@ -49,7 +54,7 @@ export default function LandingPage({ navigation, setToken, token }) {
         if (response?.type === "success") {
           const { access_token } = response.params;
           setToken(access_token);
-          navigation.navigate('Tracks');
+          navigation.navigate('Find');
         }
 
         const emitter = new EventEmitter();
