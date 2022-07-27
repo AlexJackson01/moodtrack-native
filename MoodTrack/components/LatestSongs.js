@@ -32,7 +32,7 @@ export default function LatestSongs({ navigation, token, setToken, latestSongs }
     }
 
     const createPlaylist = () => {
-      
+
     }
 
     useEffect(() => {
@@ -50,22 +50,17 @@ export default function LatestSongs({ navigation, token, setToken, latestSongs }
                 </TouchableOpacity>
                 </View>
             <View style={styles.container}>
-            <View style={{position: 'absolute', top: 5, right: 5}}>
-                <TouchableOpacity onPress={() => logout()}>
-                    <Button color="white" uppercase={false} style={{color: 'white'}}>Logout</Button>
-                </TouchableOpacity>
-                </View>
                 <View style={styles.centreContent}>
                     {user ? <Text style={styles.moodText}>Latest MoodTracks for {user}</Text> : null}
                         {latestSongs ? (latestSongs.map((track) => (
-                          <View style={{display: 'flex', flexDirection: 'row', margin: 10}}>
-                            <Image style={{height: 50, width: 50, marginRight: 5}} source={{uri: track[0].image}} />
-                            <Text key={track.id} style={styles.secondaryText}>{track[0].track_name}{"\n"}{track[0].artists}</Text>
+                          <View key={track.id} style={{display: 'flex', flexDirection: 'row', margin: 10}}>
+                            <Image style={{height: 50, width: 50, marginRight: 5}} source={{uri: track.image}} />
+                            <Text style={styles.secondaryText}>{track.track_name}{"\n"}{track.artists}</Text>
                             </View>
                     ))) : <Text style={styles.secondaryText}>No songs recommended yet!</Text>}
 
                     <Button icon="headphones" style={{marginTop: 50}} size={20} labelStyle={{fontFamily: 'RobotoSlabReg', fontSize: 12}} uppercase={false} color="#8C52FF" mode="contained" onPress={(e) => createPlaylist(e)} >
-                        Create MoodTrack Playlist
+                        Create Spotify Playlist
                     </Button>
                     </View>
                 </View>

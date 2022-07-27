@@ -10,8 +10,6 @@ import Slider from '@react-native-community/slider';
 import { Button } from 'react-native-paper';
 import { Audio } from 'expo-av';
 
-// import Light from '../assets/RobotoSlab_Light.ttf';
-
 export default function FindTracks({ navigation, token, setToken, setLatestSongs, latestSongs }) {
 
     const [showTrack, setShowTrack] = useState(false);
@@ -22,7 +20,6 @@ export default function FindTracks({ navigation, token, setToken, setLatestSongs
     const [songRecommendation, setSongRecommendation] = useState([]);
     const [songPreview, setSongPreview] = useState(null);
     const [playing, setPlaying] = useState(false);
-    const [liked, setLiked] = useState(false);
 
 
 
@@ -45,10 +42,8 @@ export default function FindTracks({ navigation, token, setToken, setLatestSongs
 
     let tracks = [];
     let features = [];
-    let songList = [];
 
     const findTracks = async () => {
-        // window.location.reload();
 
             const res = await axios.get("https://api.spotify.com/v1/search", {
                 headers: {
@@ -62,9 +57,7 @@ export default function FindTracks({ navigation, token, setToken, setLatestSongs
                 }
               })
             
-              const data = res.data.tracks.items;
-              // console.log(data);
-      
+              const data = res.data.tracks.items;      
             
               for (let track of data) {
                 tracks.push({
@@ -77,10 +70,6 @@ export default function FindTracks({ navigation, token, setToken, setLatestSongs
                   image: track.album.images[1].url,
                 })
               }
-        // generate random tracks
-
-
-        // console.log(tracks);
     
         // call audio features for random tracks
         for (let track of tracks) {
@@ -91,12 +80,8 @@ export default function FindTracks({ navigation, token, setToken, setLatestSongs
           })
           features.push(res2.data);
         }
-
-        // console.log(features);
       
         let combined = tracks.map((item, i) => Object.assign({}, item, features[i])); // the results from search 1 and 2 are joined together
-        // console.log(combined);
-
         setTrackList(combined);
 
     }
@@ -110,23 +95,11 @@ export default function FindTracks({ navigation, token, setToken, setLatestSongs
             && (track.valence >= valence - 0.3 && track.valence <= valence + 0.3)
         })
         
-        // console.log(filtered);
-         
+        
         setSongRecommendation(filtered);
-
-        // console.log(songRecommendation)
-
         setSongPreview(filtered[0].preview);
-
-        // console.log(latestSongs[0].track_name);
-
-           // setLatestSongs([...latestSongs, songRecommendation])
-
-        // console.log(latestSongs);
-  
+        setLatestSongs([...latestSongs, filtered[0]]);  
         setShowTrack(true);
-
-        // playSong();
 
     }
 
@@ -145,22 +118,9 @@ export default function FindTracks({ navigation, token, setToken, setLatestSongs
 
     }
 
-    const addToFavourites = (songRecommendation) => {
-      setLiked(true);
-      // setLatestSongs(...latestSongs, songRecommendation[0]);
-      setLatestSongs(state => [...state, songRecommendation]);
-      navigation.navigate('Latest');
-      console.log('hereeeee');
-  }
-
-    
-    
-       
-    
 
     useEffect(() => {
             findTracks();
-        // setLoading(true);
     }, [])   
 
     const [loaded] = useFonts({
@@ -186,9 +146,7 @@ export default function FindTracks({ navigation, token, setToken, setLatestSongs
               <View style={styles.container}>
                 {!showTrack && trackList.length >= 1 && (
                     <View style={styles.centreContent}>
-                        {/* <Text>{token}</Text> */}
                     <Text style={styles.moodText}>How are you feeling today?</Text>
-                    {/* {trackList.length > 0 && <Text>{trackList[0].track_name}</Text>} */}
                     <View style={{display: 'flex', flexDirection: 'row'}}>
                     <Emoji name="video_game" style={{fontSize: 30}} />
                     <Slider
@@ -238,23 +196,20 @@ export default function FindTracks({ navigation, token, setToken, setLatestSongs
                     </View>
                 )}
 
-                {/* {!showTrack && trackList !== null && <Text style={styles.moodText}>Loading today's tracks...</Text>} */}
-
-
                 {showTrack && songRecommendation.length >= 1 && (
                     <View style={styles.centreContent}>
                     <Text style={styles.moodText}>MoodTrack of the day</Text>
+                    <Button icon="music" style={{marginTop: 50}} labelStyle={{fontFamily: 'RobotoSlabReg', fontSize: 12}} uppercase={false} color="#8C52FF" mode="contained" onPress={(e) => navigation.navigate('Latest')} >
+                        Latest
+                    </Button>
                     <Image style={{height: 150, width: 150}} source={{uri: songRecommendation[0].image}} />
                     <Text style={styles.trackText}>{songRecommendation[0].track_name} by {songRecommendation[0].artists}</Text>
                     <View style={{display: 'flex', flexDirection: 'row'}}>
                     {songPreview !== null && (
                         <TouchableOpacity onPress={() => playPreview()}>
-                            <Button icon="play-pause" style={{marginLeft: 20}} labelStyle={{fontSize: 40}} color="#8C52FF" />
+                            <Button icon="play-pause" style={{marginLeft: 17}} labelStyle={{fontSize: 40}} color="#8C52FF" />
                         </TouchableOpacity>
                     )}
-                        <TouchableOpacity onPress={() => addToFavourites(songRecommendation)}>
-                          <Button icon={!liked ? 'cards-heart-outline' : 'cards-heart'} style={{marginLeft: 20}} labelStyle={{fontSize: 40}} color="#8C52FF" />
-                        </TouchableOpacity>
                     </View>
                     <Text style={styles.secondaryText}>Listen in full on</Text>
                     <TouchableOpacity onPress={() => navigation.navigate(songRecommendation[0].external)}>
