@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, Linking, TouchableOpacity } from 'react-native';
@@ -12,17 +12,15 @@ import { Audio } from 'expo-av';
 import {useNavigation} from '@react-navigation/native';
 
 
-
-export default function FindTracks({ token, setToken, setLatestSongs, latestSongs }) {
+export default function FindTracks({ token, setToken, setLatestSongs, latestSongs, setSongRecommendation, setSongPreview }) {
 
     const [showTrack, setShowTrack] = useState(false);
     const [dance, setDance] = useState(0.0);
     const [energy, setEnergy] = useState(0.0);
     const [valence, setValence] = useState(0.0);
     const [trackList, setTrackList] = useState([null]);
-    const [songRecommendation, setSongRecommendation] = useState([]);
-    const [songPreview, setSongPreview] = useState(null);
-    const [playing, setPlaying] = useState(false);
+    // const [songRecommendation, setSongRecommendation] = useState([]);
+    // const [songPreview, setSongPreview] = useState(null);
 
     const navigation = useNavigation();
 
@@ -100,27 +98,12 @@ export default function FindTracks({ token, setToken, setLatestSongs, latestSong
         })
         
         
-        setSongRecommendation(filtered);
+        setSongRecommendation(filtered[0]);
         setSongPreview(filtered[0].preview);
         setLatestSongs([...latestSongs, filtered[0]]);  
-        setShowTrack(true);
-        navigation.navigate('Tracks');    
+        // setShowTrack(true);
+        navigation.navigate('Music', { screen: 'Track' });;    
 
-
-    }
-
-    const playPreview = async () => {
-        setPlaying(true);        
-
-        try {
-            const playbackObject = await Audio.Sound.createAsync(
-                { uri: songPreview },
-                { shouldPlay: true }
-              );
-              playbackObject.playAsync();   
-        } catch (error) {
-            console.log(error)
-        }
 
     }
 
@@ -199,28 +182,6 @@ export default function FindTracks({ token, setToken, setLatestSongs, latestSong
                     <Button icon="music" style={{marginTop: 50}} labelStyle={{fontFamily: 'RobotoSlabReg', fontSize: 12}} uppercase={false} color="#8C52FF" mode="contained" onPress={(e) => findRecommendation(e)} >
                         Get Today's MoodTrack
                     </Button>
-                    </View>
-                )}
-
-                {showTrack && songRecommendation.length >= 1 && (
-                    <View style={styles.centreContent}>
-                    <Text style={styles.moodText}>MoodTrack of the day</Text>
-                    <Button icon="music" style={{marginTop: 50}} labelStyle={{fontFamily: 'RobotoSlabReg', fontSize: 12}} uppercase={false} color="#8C52FF" mode="contained" onPress={(e) => navigation.navigate('Latest')} >
-                        Latest
-                    </Button>
-                    <Image style={{height: 150, width: 150}} source={{uri: songRecommendation[0].image}} />
-                    <Text style={styles.trackText}>{songRecommendation[0].track_name} by {songRecommendation[0].artists}</Text>
-                    <View style={{display: 'flex', flexDirection: 'row'}}>
-                    {songPreview !== null && (
-                        <TouchableOpacity onPress={() => playPreview()}>
-                            <Button icon="play-pause" style={{marginLeft: 17}} labelStyle={{fontSize: 40}} color="#8C52FF" />
-                        </TouchableOpacity>
-                    )}
-                    </View>
-                    <Text style={styles.secondaryText}>Listen in full on</Text>
-                    <TouchableOpacity onPress={() => navigation.navigate(songRecommendation[0].external)}>
-                        <Image style={styles.spotifyLogo} source={require('../images/Spotify_Logo.png')} />
-                    </TouchableOpacity>
                     </View>
                 )}
 

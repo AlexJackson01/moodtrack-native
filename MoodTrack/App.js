@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, createContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -9,11 +9,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Login from './components/Login';
 import FindTracks from './components/FindTracks';
 import LatestSongs from './components/LatestSongs';
+import DailySong from './components/DailySong';
+import { Context } from './contexts/songContext';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-
-
 
 
 export default function App({ navigation }) {
@@ -21,7 +21,10 @@ export default function App({ navigation }) {
   const [token, setToken] = useState("");
   const [trackList, setTrackList] = useState([]);
   const [songRecommendation, setSongRecommendation] = useState([]);
+  const [songPreview, setSongPreview] = useState(null);
   const [latestSongs, setLatestSongs] = useState([]);
+
+  const value = songRecommendation;
 
 
   function NavTabs() {
@@ -31,7 +34,7 @@ export default function App({ navigation }) {
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
-          if (route.name === 'Find') {
+          if (route.name === 'Track') {
             iconName = focused
               ? 'search'
               : 'search-outline';
@@ -49,7 +52,7 @@ export default function App({ navigation }) {
         tabBarInactiveTintColor: 'gray',
       })}
     >
-        <Tab.Screen name='Find' options={{headerShown: false}} children={()=><FindTracks token={token} setToken={setToken} latestSongs={latestSongs} setLatestSongs={setLatestSongs} songRecommendation={songRecommendation} setSongRecommendation={setSongRecommendation}/>} />
+        <Tab.Screen name='Track' options={{headerShown: false}} children={()=><DailySong token={token} setToken={setToken} setTrackList={setTrackList} songRecommendation={songRecommendation} songPreview={songPreview}/>} />
         <Tab.Screen name='Latest' options={{headerShown: false}} children={()=><LatestSongs token={token} setToken={setToken} latestSongs={latestSongs}/>} />
         <Tab.Screen name='Moods' options={{headerShown: false}} children={()=><LatestSongs token={token} setToken={setToken} latestSongs={latestSongs}/>} />
         <Tab.Screen name='About' options={{headerShown: false}} children={()=><LatestSongs token={token} setToken={setToken} latestSongs={latestSongs}/>} />
@@ -63,6 +66,7 @@ export default function App({ navigation }) {
 
   return (
     <NavigationContainer>
+      <Context.Provider value={songRecommendation}>
       <PaperProvider>
         <Stack.Navigator initialRouteName='Login'>
 
@@ -70,11 +74,11 @@ export default function App({ navigation }) {
             {(props) => <Login {...props} token={token} setToken={setToken} setTrackList={setTrackList} />}
             </Stack.Screen>
 
-            <Stack.Screen name='Tracks' headerTitleStyle={{fontFamily: 'RobotoSlabReg'}} options={{title: 'MoodTrack of the Day', cardStyleInterpolator: CardStyleInterpolators.forFadeFromBottomAndroid}}>
-            {(props) => <LatestSongs {...props} token={token} setToken={setToken} setTrackList={setTrackList} />}
+            <Stack.Screen name='Find' options={{headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forFadeFromBottomAndroid}}>
+            {(props) => <FindTracks {...props} token={token} setToken={setToken} latestSongs={latestSongs} setLatestSongs={setLatestSongs} songRecommendation={songRecommendation} setSongRecommendation={setSongRecommendation} setSongPreview={setSongPreview} />}
             </Stack.Screen>
 
-            <Stack.Screen name='Find' options={{headerShown: false}} component={NavTabs}/>
+            <Stack.Screen name='Music' options={{headerShown: false}} component={NavTabs}/>
 
             {/* <Stack.Screen name='NavTabs' options={{headerShown: false}} component={NavTabs}/> */}
 
@@ -91,7 +95,10 @@ export default function App({ navigation }) {
           <Tab.Screen name="Tracks" component={FindTracks} />
           <Tab.Screen name="Latest" component={LatestSongs} />
         </Tab.Navigator> */}
+        
       </PaperProvider>  
+      </Context.Provider>
+
     </NavigationContainer>
   );
 }
