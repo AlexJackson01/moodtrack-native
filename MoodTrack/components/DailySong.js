@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, Linking, TouchableOpacity } from 'react-native';
@@ -27,16 +27,6 @@ export default function DailySong({ token, setToken, latestSongs, songRecommenda
 
     }
 
-    const getUser = async () => {
-
-        const res = await axios.get("https://api.spotify.com/v1/me", {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        })
-        setUser(res.data.display_name);
-    }
-
     const playPreview = async () => {
         setPlaying(true);        
 
@@ -55,11 +45,7 @@ export default function DailySong({ token, setToken, latestSongs, songRecommenda
     const createPlaylist = () => {
 
     }
-
-    useEffect(() => {
-        getUser();
-    }, [songRecommendation])
-    
+   
 
 
   return (

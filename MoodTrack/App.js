@@ -1,4 +1,4 @@
-import { useState, createContext } from 'react';
+import { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -10,7 +10,6 @@ import Login from './components/Login';
 import FindTracks from './components/FindTracks';
 import LatestSongs from './components/LatestSongs';
 import DailySong from './components/DailySong';
-import { Context } from './contexts/songContext';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -66,7 +65,6 @@ export default function App({ navigation }) {
 
   return (
     <NavigationContainer>
-      <Context.Provider value={songRecommendation}>
       <PaperProvider>
         <Stack.Navigator initialRouteName='Login'>
 
@@ -97,8 +95,6 @@ export default function App({ navigation }) {
         </Tab.Navigator> */}
         
       </PaperProvider>  
-      </Context.Provider>
-
     </NavigationContainer>
   );
 }

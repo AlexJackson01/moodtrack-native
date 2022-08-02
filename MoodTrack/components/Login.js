@@ -38,7 +38,9 @@ export default function Login({ setToken, token }) {
             "user-read-email",
             "user-read-private",
             "user-library-read",
-            "user-library-modify"
+            "user-library-modify",
+            "playlist-modify-private",
+            "playlist-modify-public",
           ],
           // In order to follow the "Authorization Code Flow" 
           // to fetch token after authorizationEndpoint

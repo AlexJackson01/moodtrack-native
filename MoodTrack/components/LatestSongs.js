@@ -2,21 +2,26 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, Linking, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, FlatView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Emoji from 'react-native-emoji';
 import { useFonts } from 'expo-font';
 import Slider from '@react-native-community/slider';
-import { Button } from 'react-native-paper';
+import { Button, DataTable } from 'react-native-paper';
 import { Audio } from 'expo-av';
 import {useNavigation} from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 // import Light from '../assets/RobotoSlab_Light.ttf';
 
 export default function LatestSongs({ token, setToken, latestSongs }) {
 
-    const [user, setUser] = useState("");
+    const [userId, setUserId] = useState("");
+    const [userName, setUserName] = useState("");
+    const [playlistId, setPlaylistId] = useState("");
+    const [songIds, setSongIds] = useState(null);
+
 
     const navigation = useNavigation();
 
@@ -33,16 +38,90 @@ export default function LatestSongs({ token, setToken, latestSongs }) {
             Authorization: `Bearer ${token}`
           }
         })
-        setUser(res.data.display_name);
+        // console.log(res.data);
+        setUserId(res.data.id);
+        setUserName(res.data.display_name);
+        // console.log(user);
     }
 
-    const createPlaylist = () => {
+    const createPlaylist = async () => {
+      
+        const data = {
+          name: "MoodTracks",
+          public: false
+        }
+      
+    
+      const config = {
+        headers: {
+             "Content-Type": "application/json",
+             Authorization: `Bearer ${token}`
+         }
+     };
 
+     const res = await axios.post(`https://api.spotify.com/v1/users/${userId}/playlists`, JSON.stringify(data), config);
+    //  console.log(res.data);
+     const playlistId = res.data.id;
+     console.log(playlistId);
+
+
+     let songs = [];
+     for (let track of latestSongs) {
+      songs.push(track.uri);
+     }
+
+    //  setSongIds(songs);
+     console.log(songs);
+
+
+    const data2 = {
+      uris: songs
+    }
+
+    const res2 = await axios.post(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, data2, config);
+    console.log(res2.data);
+
+
+
+
+
+
+
+            // const res = await axios.post(`https://api.spotify.com/v1/users/${user.id}/playlists`, {
+            //   headers: {
+            //     Authorization: `Bearer ${token}`
+            //   },
+            //   body: {
+            //     name: "MoodTrack"
+            //   }
+            // })
+
+            // .then(res => {
+            //   console.log("res" + res)
+            // })
+            // .catch(e => console.log(e))
+
+          
+      //       const data = res.data.tracks.items;      
+          
+      //       for (let track of data) {
+      //         tracks.push({
+      //           id: track.id,
+      //           track_name: track.name,
+      //           artists: track.artists[0].name,
+      //           preview: track.preview_url,
+      //           uri: track.uri,
+      //           external: track.external_urls.spotify,
+      //           image: track.album.images[1].url,
+      //         })
+      //       }
+
+  
     }
 
     useEffect(() => {
         getUser();
-    }, [user])
+    }, [userName])
     
 
 
@@ -56,14 +135,15 @@ export default function LatestSongs({ token, setToken, latestSongs }) {
                 </View>
             <View style={styles.container}>
                 <View style={styles.centreContent}>
-                    {user ? <Text style={styles.moodText}>Latest MoodTracks for {user}</Text> : null}
+                    {userName ? <Text style={styles.moodText}>Latest MoodTracks for {userName}</Text> : null}
+                    {/* <ScrollView> */}
                         {latestSongs ? (latestSongs.map((track) => (
                           <View key={track.id} style={{display: 'flex', flexDirection: 'row', margin: 10}}>
                             <Image style={{height: 50, width: 50, marginRight: 5}} source={{uri: track.image}} />
                             <Text style={styles.secondaryText}>{track.track_name}{"\n"}{track.artists}</Text>
                             </View>
                     ))) : <Text style={styles.secondaryText}>No songs recommended yet!</Text>}
-
+                    {/* </ScrollView> */}
                     <Button icon="headphones" style={{marginTop: 50}} size={20} labelStyle={{fontFamily: 'RobotoSlabReg', fontSize: 12}} uppercase={false} color="#8C52FF" mode="contained" onPress={(e) => createPlaylist(e)} >
                         Create Spotify Playlist
                     </Button>
