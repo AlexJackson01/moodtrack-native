@@ -20,7 +20,7 @@ export default function LatestSongs({ token, setToken, latestSongs }) {
     const [userId, setUserId] = useState("");
     const [userName, setUserName] = useState("");
     const [playlistId, setPlaylistId] = useState("");
-    const [songIds, setSongIds] = useState(null);
+    const [confirmation, setConfirmation] = useState("");
 
 
     const navigation = useNavigation();
@@ -45,6 +45,8 @@ export default function LatestSongs({ token, setToken, latestSongs }) {
     }
 
     const createPlaylist = async () => {
+
+      
       
         const data = {
           name: "MoodTracks",
@@ -62,7 +64,8 @@ export default function LatestSongs({ token, setToken, latestSongs }) {
      const res = await axios.post(`https://api.spotify.com/v1/users/${userId}/playlists`, JSON.stringify(data), config);
     //  console.log(res.data);
      const playlistId = res.data.id;
-     console.log(playlistId);
+     setPlaylistId(res.data.id)
+    //  console.log(playlistId);
 
 
      let songs = [];
@@ -80,42 +83,7 @@ export default function LatestSongs({ token, setToken, latestSongs }) {
 
     const res2 = await axios.post(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, data2, config);
     console.log(res2.data);
-
-
-
-
-
-
-
-            // const res = await axios.post(`https://api.spotify.com/v1/users/${user.id}/playlists`, {
-            //   headers: {
-            //     Authorization: `Bearer ${token}`
-            //   },
-            //   body: {
-            //     name: "MoodTrack"
-            //   }
-            // })
-
-            // .then(res => {
-            //   console.log("res" + res)
-            // })
-            // .catch(e => console.log(e))
-
-          
-      //       const data = res.data.tracks.items;      
-          
-      //       for (let track of data) {
-      //         tracks.push({
-      //           id: track.id,
-      //           track_name: track.name,
-      //           artists: track.artists[0].name,
-      //           preview: track.preview_url,
-      //           uri: track.uri,
-      //           external: track.external_urls.spotify,
-      //           image: track.album.images[1].url,
-      //         })
-      //       }
-
+    setConfirmation("Playlist created - listen on Spotify!")
   
     }
 
@@ -144,9 +112,10 @@ export default function LatestSongs({ token, setToken, latestSongs }) {
                             </View>
                     ))) : <Text style={styles.secondaryText}>No songs recommended yet!</Text>}
                     {/* </ScrollView> */}
-                    <Button icon="headphones" style={{marginTop: 50}} size={20} labelStyle={{fontFamily: 'RobotoSlabReg', fontSize: 12}} uppercase={false} color="#8C52FF" mode="contained" onPress={(e) => createPlaylist(e)} >
+                    <Button icon="headphones" style={{marginTop: 25, marginBottom: 10}} size={20} labelStyle={{fontFamily: 'RobotoSlabReg', fontSize: 12}} uppercase={false} color="#8C52FF" mode="contained" onPress={(e) => createPlaylist(e)} >
                         Create Spotify Playlist
                     </Button>
+                    <Text style={styles.confirmationText}>{confirmation}</Text>
                     </View>
                 </View>
                 </LinearGradient>   
@@ -216,6 +185,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 5,
     fontFamily: 'RobotoSlabReg',
+  },
+  confirmationText: {
+    fontSize: 12,
+    marginTop: 5,
+    fontFamily: 'RobotoSlabReg',
+    textAlign: 'center',
   },
   spotifyLogo: {
     height: 40,
