@@ -12,6 +12,7 @@ import { Button, DataTable } from 'react-native-paper';
 import { Audio } from 'expo-av';
 import {useNavigation} from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 
 // import Light from '../assets/RobotoSlab_Light.ttf';
@@ -22,6 +23,10 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
     const [userDance, setUserDance] = useState([]);
     const [userEnergy, setUserEnergy] = useState([]);
     const [userValence, setUserValence] = useState([]);
+    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+    const [userDate, setUserDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+
 
     const navigation = useNavigation();
 
@@ -30,46 +35,24 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
         navigation.navigate('Login');    
     }
 
-    const createPlaylist = async () => {
+    const showDatePicker = () => {
+        setDatePickerVisibility(true);
+      };
     
-        const data = {
-          name: "MoodTracks",
-          public: false
-        }
-      
+      const hideDatePicker = () => {
+        setDatePickerVisibility(false);
+      };
     
-      const config = {
-        headers: {
-             "Content-Type": "application/json",
-             Authorization: `Bearer ${token}`
-         }
-     };
-
-     const res = await axios.post(`https://api.spotify.com/v1/users/${userId}/playlists`, JSON.stringify(data), config);
-    //  console.log(res.data);
-     const playlistId = res.data.id;
-     setPlaylistId(res.data.id)
-    //  console.log(playlistId);
-
-
-     let songs = [];
-     for (let track of latestSongs) {
-      songs.push(track.uri);
-     }
-
-    //  setSongIds(songs);
-     console.log(songs);
-
-
-    const data2 = {
-      uris: songs
-    }
-
-    const res2 = await axios.post(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, data2, config);
-    console.log(res2.data);
-    setConfirmation("Playlist created - listen on Spotify!")
-  
-    }
+      const handleConfirm = (date) => {
+        let dateArr = date.toLocaleDateString().split("/");
+        let engDate = [];
+        engDate.push(dateArr[1], dateArr[0], dateArr[2]);
+        setUserDate(engDate.join("/"));
+        const sevenDay = Number(engDate[0]) + 7;
+        setEndDate(`${sevenDay}/${engDate[1]}/${engDate[2]}`);
+        console.log(endDate);
+        hideDatePicker();
+      };
 
     const getMoods = () => {
       const ref = firebase.firestore().collection("Moods");
@@ -89,9 +72,9 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
                 console.log("no matches");
                 // setLoading(false);
             }
-     } catch (error) {
-            console.log(error.message)
-    }
+        } catch (error) {
+                console.log(error.message)
+        }
 
         let dance = [];
         let energy = [];
@@ -102,17 +85,16 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
             energy.push(mood.energy);
             valence.push(mood.valence);
         }
-
             setUserDance(dance);
             setUserEnergy(energy);
             setUserValence(valence);
-
-        // console.log(userValence);
     }
+
+
 
     useEffect(() => {
       getMoods();
-    }, [])
+    }, [userName])
     
     
 
@@ -127,17 +109,25 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
                 </View>
             <View style={styles.container}>
                 <View style={styles.centreContent}>
-                    {userName ? <Text style={styles.moodText}>MoodTracking for {userName}</Text> : null}
-                    {/* <ScrollView> */}
+                    <Text style={styles.moodText}>7-Day MoodTracking {userDate ? (<Text>from {userDate} to {endDate}</Text>) : null}</Text>
+                    {userName ? <Text style={styles.moodText}></Text> : null}
+                    <Button onPress={showDatePicker}>Choose Start Date</Button>
+                    <DateTimePickerModal
+                        isVisible={isDatePickerVisible}
+                        mode="date"
+                        onConfirm={handleConfirm}
+                        onCancel={hideDatePicker}
+                        dateFormat="date month year"
+                        // display="spinner"
+                    />
                         {moods ? (userValence.map((track, i) => (
                           <View key={i}>
-                            <Text>Hello, {track}</Text>
                             </View>
                     ))) : <Text style={styles.secondaryText}>No moods input yet!</Text>}
                     {/* </ScrollView> */}
-                    <Button icon="headphones" style={{marginTop: 25, marginBottom: 10}} size={20} labelStyle={{fontFamily: 'RobotoSlabReg', fontSize: 12}} uppercase={false} color="#8C52FF" mode="contained" onPress={(e) => createPlaylist(e)} >
-                        Create Spotify Playlist
-                    </Button>
+                    {/* <Button icon="brain" style={{marginTop: 25, marginBottom: 10}} size={20} labelStyle={{fontFamily: 'RobotoSlabReg', fontSize: 12}} uppercase={false} color="#8C52FF" mode="contained" onPress={(e) => createPlaylist(e)} >
+                        Generate Mood Chart
+                    </Button> */}
                     </View>
                 </View>
                 </LinearGradient>   

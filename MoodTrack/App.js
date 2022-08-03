@@ -54,7 +54,7 @@ export default function App({ navigation }) {
     >
         <Tab.Screen name='Track' options={{headerShown: false}} children={()=><DailySong token={token} setToken={setToken} setTrackList={setTrackList} songRecommendation={songRecommendation} songPreview={songPreview}/>} />
         <Tab.Screen name='Latest' options={{headerShown: false}} children={()=><LatestSongs token={token} setToken={setToken} setUserId={setUserId} userId={userId} setUserName={setUserName} userName={userName} />} />
-        <Tab.Screen name='Moods' options={{headerShown: false}} children={()=><Moods token={token} setToken={setToken} userId={userId} />} />
+        <Tab.Screen name='Moods' options={{headerShown: false}} children={()=><Moods token={token} setToken={setToken} userId={userId} userName={userName} />} />
         <Tab.Screen name='Resources' options={{headerShown: false}} children={()=><Resources token={token} setToken={setToken} />} />
       </Tab.Navigator>
     );

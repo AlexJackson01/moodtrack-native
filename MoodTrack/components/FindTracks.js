@@ -50,6 +50,8 @@ export default function FindTracks({ token, setToken, setUserId, userId, setUser
 
     const findTracks = async () => {
 
+      getUser();
+
             const res = await axios.get("https://api.spotify.com/v1/search", {
                 headers: {
                   Authorization: `Bearer ${token}`
@@ -175,7 +177,6 @@ export default function FindTracks({ token, setToken, setUserId, userId, setUser
 
     useEffect(() => {
             findTracks();
-            getUser();
     }, [])   
 
     const [loaded] = useFonts({
