@@ -103,6 +103,7 @@ export default function FindTracks({ token, setToken, setUserId, userId, setUser
         setSongRecommendation(filtered[0]);
         setSongPreview(filtered[0].preview);
         addLatestSong(filtered);
+        addMood(filtered);
 
         navigation.navigate('Music', { screen: 'Track' });    
     }
@@ -126,6 +127,27 @@ export default function FindTracks({ token, setToken, setUserId, userId, setUser
         uri: filtered[0].uri,
         external: filtered[0].external,
         image: filtered[0].image,
+        date: getDate()
+      }
+
+      ref
+      .doc(docData.id)
+      .set(docData)
+      .catch((error) => {
+        alert(error.message);
+      })
+    }
+
+    const addMood = (filtered) => {
+
+      const ref = firebase.firestore().collection("Moods"); // connects to Firebase database with the collection 'favourites'
+
+      const docData = {
+        user: userId,
+        id: filtered[0].id,
+        dance: dance,
+        energy: energy,
+        valence: valence,
         date: getDate()
       }
 

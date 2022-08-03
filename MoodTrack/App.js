@@ -10,6 +10,8 @@ import Login from './components/Login';
 import FindTracks from './components/FindTracks';
 import LatestSongs from './components/LatestSongs';
 import DailySong from './components/DailySong';
+import Moods from './components/Moods';
+import Resources from './components/Resources';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -23,8 +25,6 @@ export default function App({ navigation }) {
   const [songPreview, setSongPreview] = useState(null);
   const [userId, setUserId] = useState("");
   const [userName, setUserName] = useState("");
-
-  const value = songRecommendation;
 
 
   function NavTabs() {
@@ -54,8 +54,8 @@ export default function App({ navigation }) {
     >
         <Tab.Screen name='Track' options={{headerShown: false}} children={()=><DailySong token={token} setToken={setToken} setTrackList={setTrackList} songRecommendation={songRecommendation} songPreview={songPreview}/>} />
         <Tab.Screen name='Latest' options={{headerShown: false}} children={()=><LatestSongs token={token} setToken={setToken} setUserId={setUserId} userId={userId} setUserName={setUserName} userName={userName} />} />
-        <Tab.Screen name='Moods' options={{headerShown: false}} children={()=><LatestSongs token={token} setToken={setToken} />} />
-        <Tab.Screen name='Resources' options={{headerShown: false}} children={()=><LatestSongs token={token} setToken={setToken} />} />
+        <Tab.Screen name='Moods' options={{headerShown: false}} children={()=><Moods token={token} setToken={setToken} />} />
+        <Tab.Screen name='Resources' options={{headerShown: false}} children={()=><Resources token={token} setToken={setToken} />} />
       </Tab.Navigator>
     );
 
