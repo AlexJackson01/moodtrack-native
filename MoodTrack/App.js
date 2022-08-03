@@ -39,8 +39,8 @@ export default function App({ navigation }) {
               : 'search-outline';
           } else if (route.name === 'Latest') {
             iconName = focused ? 'musical-notes' : 'musical-notes-outline';   
-          } else if (route.name === 'About') {
-            iconName = focused ? 'mail-sharp' : 'mail-outline';   
+          } else if (route.name === 'Resources') {
+            iconName = focused ? 'folder-sharp' : 'folder-outline';   
           } else if (route.name === 'Moods') {
             iconName = focused ? 'bar-chart-sharp' : 'bar-chart-outline';   
           }
@@ -54,14 +54,11 @@ export default function App({ navigation }) {
         <Tab.Screen name='Track' options={{headerShown: false}} children={()=><DailySong token={token} setToken={setToken} setTrackList={setTrackList} songRecommendation={songRecommendation} songPreview={songPreview}/>} />
         <Tab.Screen name='Latest' options={{headerShown: false}} children={()=><LatestSongs token={token} setToken={setToken} latestSongs={latestSongs}/>} />
         <Tab.Screen name='Moods' options={{headerShown: false}} children={()=><LatestSongs token={token} setToken={setToken} latestSongs={latestSongs}/>} />
-        <Tab.Screen name='About' options={{headerShown: false}} children={()=><LatestSongs token={token} setToken={setToken} latestSongs={latestSongs}/>} />
+        <Tab.Screen name='Resources' options={{headerShown: false}} children={()=><LatestSongs token={token} setToken={setToken} latestSongs={latestSongs}/>} />
       </Tab.Navigator>
     );
 
 }
-
-
-  // options={{headerShown: false}}
 
   return (
     <NavigationContainer>
@@ -78,22 +75,8 @@ export default function App({ navigation }) {
 
             <Stack.Screen name='Music' options={{headerShown: false}} component={NavTabs}/>
 
-            {/* <Stack.Screen name='NavTabs' options={{headerShown: false}} component={NavTabs}/> */}
 
-            {/* <Stack.Screen name='Tracks' options={{cardStyleInterpolator: CardStyleInterpolators.forFadeFromBottomAndroid}}>
-            {(props) => <FindTracks {...props} token={token} setToken={setToken} latestSongs={latestSongs} setLatestSongs={setLatestSongs} songRecommendation={songRecommendation} setSongRecommendation={setSongRecommendation} />}
-          </Stack.Screen>
-          
-          <Stack.Screen name='Latest' options={{cardStyleInterpolator: CardStyleInterpolators.forFadeFromBottomAndroid}}>
-            {(props) => <LatestSongs {...props} token={token} setToken={setToken} latestSongs={latestSongs} />}
-          </Stack.Screen> */}
-        </Stack.Navigator> 
-
-        {/* <Tab.Navigator>
-          <Tab.Screen name="Tracks" component={FindTracks} />
-          <Tab.Screen name="Latest" component={LatestSongs} />
-        </Tab.Navigator> */}
-        
+        </Stack.Navigator>         
       </PaperProvider>  
     </NavigationContainer>
   );
