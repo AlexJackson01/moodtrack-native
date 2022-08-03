@@ -19,6 +19,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export default function Moods({ token, setToken, setUserId, userId, userName }) {
 
     const [moods, setMoods] = useState([]);
+    const [userDance, setUserDance] = useState([]);
+    const [userEnergy, setUserEnergy] = useState([]);
+    const [userValence, setUserValence] = useState([]);
 
     const navigation = useNavigation();
 
@@ -72,7 +75,7 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
       const ref = firebase.firestore().collection("Moods");
 
       try {
-        ref.where("user", "==", userId).orderBy("date", "desc").onSnapshot((querySnapshot) => { 
+        ref.where("user", "==", userId).onSnapshot((querySnapshot) => { 
             const items = [];
             querySnapshot.forEach((doc) => {
                 items.push(doc.data());
@@ -89,6 +92,22 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
      } catch (error) {
             console.log(error.message)
     }
+
+        let dance = [];
+        let energy = [];
+        let valence = [];
+
+        for (let mood of moods) {
+            dance.push(mood.dance);
+            energy.push(mood.energy);
+            valence.push(mood.valence);
+        }
+
+            setUserDance(dance);
+            setUserEnergy(energy);
+            setUserValence(valence);
+
+        // console.log(userValence);
     }
 
     useEffect(() => {
@@ -108,19 +127,17 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
                 </View>
             <View style={styles.container}>
                 <View style={styles.centreContent}>
-                    {userName ? <Text style={styles.moodText}>Latest MoodTracks for {userName}</Text> : null}
+                    {userName ? <Text style={styles.moodText}>MoodTracking for {userName}</Text> : null}
                     {/* <ScrollView> */}
-                        {latestSongs ? (latestSongs.slice(0, 3).map((track) => (
-                          <View key={track.id} style={{display: 'flex', flexDirection: 'row', margin: 10}}>
-                            <Image style={{height: 50, width: 50, marginRight: 5}} source={{uri: track.image}} />
-                            <Text style={styles.secondaryText}>{track.track_name}{"\n"}{track.artists}</Text>
+                        {moods ? (userValence.map((track, i) => (
+                          <View key={i}>
+                            <Text>Hello, {track}</Text>
                             </View>
-                    ))) : <Text style={styles.secondaryText}>No songs recommended yet!</Text>}
+                    ))) : <Text style={styles.secondaryText}>No moods input yet!</Text>}
                     {/* </ScrollView> */}
                     <Button icon="headphones" style={{marginTop: 25, marginBottom: 10}} size={20} labelStyle={{fontFamily: 'RobotoSlabReg', fontSize: 12}} uppercase={false} color="#8C52FF" mode="contained" onPress={(e) => createPlaylist(e)} >
                         Create Spotify Playlist
                     </Button>
-                    <Text style={styles.confirmationText}>{confirmation}</Text>
                     </View>
                 </View>
                 </LinearGradient>   
