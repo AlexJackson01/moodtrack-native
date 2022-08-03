@@ -21,7 +21,8 @@ export default function App({ navigation }) {
   const [trackList, setTrackList] = useState([]);
   const [songRecommendation, setSongRecommendation] = useState([]);
   const [songPreview, setSongPreview] = useState(null);
-  const [latestSongs, setLatestSongs] = useState([]);
+  const [userId, setUserId] = useState("");
+  const [userName, setUserName] = useState("");
 
   const value = songRecommendation;
 
@@ -52,9 +53,9 @@ export default function App({ navigation }) {
       })}
     >
         <Tab.Screen name='Track' options={{headerShown: false}} children={()=><DailySong token={token} setToken={setToken} setTrackList={setTrackList} songRecommendation={songRecommendation} songPreview={songPreview}/>} />
-        <Tab.Screen name='Latest' options={{headerShown: false}} children={()=><LatestSongs token={token} setToken={setToken} latestSongs={latestSongs}/>} />
-        <Tab.Screen name='Moods' options={{headerShown: false}} children={()=><LatestSongs token={token} setToken={setToken} latestSongs={latestSongs}/>} />
-        <Tab.Screen name='Resources' options={{headerShown: false}} children={()=><LatestSongs token={token} setToken={setToken} latestSongs={latestSongs}/>} />
+        <Tab.Screen name='Latest' options={{headerShown: false}} children={()=><LatestSongs token={token} setToken={setToken} setUserId={setUserId} userId={userId} setUserName={setUserName} userName={userName} />} />
+        <Tab.Screen name='Moods' options={{headerShown: false}} children={()=><LatestSongs token={token} setToken={setToken} />} />
+        <Tab.Screen name='Resources' options={{headerShown: false}} children={()=><LatestSongs token={token} setToken={setToken} />} />
       </Tab.Navigator>
     );
 
@@ -70,7 +71,7 @@ export default function App({ navigation }) {
             </Stack.Screen>
 
             <Stack.Screen name='Find' options={{headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forFadeFromBottomAndroid}}>
-            {(props) => <FindTracks {...props} token={token} setToken={setToken} latestSongs={latestSongs} setLatestSongs={setLatestSongs} songRecommendation={songRecommendation} setSongRecommendation={setSongRecommendation} setSongPreview={setSongPreview} />}
+            {(props) => <FindTracks {...props} token={token} setToken={setToken} songRecommendation={songRecommendation} setSongRecommendation={setSongRecommendation} setSongPreview={setSongPreview} userId={userId} setUserId={setUserId} setUserName={setUserName} />}
             </Stack.Screen>
 
             <Stack.Screen name='Music' options={{headerShown: false}} component={NavTabs}/>

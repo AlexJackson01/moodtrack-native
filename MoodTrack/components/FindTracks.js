@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import firebase from '../firebase/firebase.js';
+import { db } from '../firebase/firebase.js';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, Linking, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -10,9 +12,10 @@ import Slider from '@react-native-community/slider';
 import { Button } from 'react-native-paper';
 import { Audio } from 'expo-av';
 import {useNavigation} from '@react-navigation/native';
+import { doc, setDoc } from 'firebase/firestore';
 
 
-export default function FindTracks({ token, setToken, setLatestSongs, latestSongs, setSongRecommendation, setSongPreview }) {
+export default function FindTracks({ token, setToken, setUserId, userId, setUserName, setSongPreview, setSongRecommendation, songRecommendation }) {
 
     const [showTrack, setShowTrack] = useState(false);
     const [dance, setDance] = useState(0.0);
@@ -97,19 +100,60 @@ export default function FindTracks({ token, setToken, setLatestSongs, latestSong
             && (track.valence >= valence - 0.3 && track.valence <= valence + 0.3)
         })
         
-        
         setSongRecommendation(filtered[0]);
         setSongPreview(filtered[0].preview);
-        setLatestSongs([...latestSongs, filtered[0]]);  
-        // setShowTrack(true);
-        navigation.navigate('Music', { screen: 'Track' });;    
+        addLatestSong(filtered);
 
-
+        navigation.navigate('Music', { screen: 'Track' });    
     }
+
+    const getDate = () => {
+      let nowDate = new Date(); 
+      let date = nowDate.getDate()+'/'+(nowDate.getMonth()+1)+'/'+nowDate.getFullYear();
+      return date; 
+    }
+
+    const addLatestSong = (filtered) => {
+
+      const ref = firebase.firestore().collection("LatestSongs"); // connects to Firebase database with the collection 'favourites'
+
+      const docData = {
+        user: userId,
+        id: filtered[0].id,
+        track_name: filtered[0].track_name,
+        artists: filtered[0].artists,
+        preview: filtered[0].preview,
+        uri: filtered[0].uri,
+        external: filtered[0].external,
+        image: filtered[0].image,
+        date: getDate()
+      }
+
+      ref
+      .doc(docData.id)
+      .set(docData)
+      .catch((error) => {
+        alert(error.message);
+      })
+    }
+
+    const getUser = async () => {
+
+      const res = await axios.get("https://api.spotify.com/v1/me", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      // console.log(res.data);
+      setUserId(res.data.id);
+      setUserName(res.data.display_name);
+      // console.log(user);
+  }
 
 
     useEffect(() => {
             findTracks();
+            getUser();
     }, [])   
 
     const [loaded] = useFonts({

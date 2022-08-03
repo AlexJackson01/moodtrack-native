@@ -64,7 +64,7 @@ export default function DailySong({ token, setToken, latestSongs, songRecommenda
                     <View style={{display: 'flex', flexDirection: 'row'}}>
                     {songPreview !== null && (
                         <TouchableOpacity onPress={() => playPreview()}>
-                            <Button icon="play-pause" style={{marginLeft: 17}} labelStyle={{fontSize: 40}} color="#8C52FF" />
+                            <Button icon="play" style={{marginLeft: 17}} labelStyle={{fontSize: 40}} color="#8C52FF" />
                         </TouchableOpacity>
                     )}
                     </View>

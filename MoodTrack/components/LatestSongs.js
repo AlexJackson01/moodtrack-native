@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import firebase from '../firebase/firebase.js';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, FlatView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -15,12 +16,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 // import Light from '../assets/RobotoSlab_Light.ttf';
 
-export default function LatestSongs({ token, setToken, latestSongs }) {
+export default function LatestSongs({ token, setToken, setUserId, userId, userName }) {
 
-    const [userId, setUserId] = useState("");
-    const [userName, setUserName] = useState("");
     const [playlistId, setPlaylistId] = useState("");
     const [confirmation, setConfirmation] = useState("");
+    const [latestSongs, setLatestSongs] = useState([]);
 
 
     const navigation = useNavigation();
@@ -31,23 +31,8 @@ export default function LatestSongs({ token, setToken, latestSongs }) {
 
     }
 
-    const getUser = async () => {
-
-        const res = await axios.get("https://api.spotify.com/v1/me", {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        })
-        // console.log(res.data);
-        setUserId(res.data.id);
-        setUserName(res.data.display_name);
-        // console.log(user);
-    }
-
     const createPlaylist = async () => {
-
-      
-      
+    
         const data = {
           name: "MoodTracks",
           public: false
@@ -87,9 +72,32 @@ export default function LatestSongs({ token, setToken, latestSongs }) {
   
     }
 
+    const getLatestSongs = () => {
+      const ref = firebase.firestore().collection("LatestSongs");
+
+      try {
+        ref.where("user", "==", userId).onSnapshot((querySnapshot) => { 
+            const items = [];
+            querySnapshot.forEach((doc) => {
+                items.push(doc.data());
+            })
+            setLatestSongs(items); 
+            // setLoading(false);
+        })
+
+        if (LatestSongs.empty) {
+                console.log("no matches");
+                // setLoading(false);
+            }
+     } catch (error) {
+            console.log(error.message)
+    }
+    }
+
     useEffect(() => {
-        getUser();
-    }, [userName])
+      getLatestSongs();
+    }, [])
+    
     
 
 
@@ -105,7 +113,7 @@ export default function LatestSongs({ token, setToken, latestSongs }) {
                 <View style={styles.centreContent}>
                     {userName ? <Text style={styles.moodText}>Latest MoodTracks for {userName}</Text> : null}
                     {/* <ScrollView> */}
-                        {latestSongs ? (latestSongs.map((track) => (
+                        {latestSongs ? (latestSongs.slice(0, 3).map((track) => (
                           <View key={track.id} style={{display: 'flex', flexDirection: 'row', margin: 10}}>
                             <Image style={{height: 50, width: 50, marginRight: 5}} source={{uri: track.image}} />
                             <Text style={styles.secondaryText}>{track.track_name}{"\n"}{track.artists}</Text>
