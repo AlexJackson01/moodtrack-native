@@ -15,7 +15,7 @@ import {
 export default function MoodChart({ userDance, userEnergy, userValence, userDate, endDate }) {
 
     const data = {
-        labels: [`${userDate}`, "", "", "", "", `${endDate}`],
+        labels: [`${userDate}`, "", "", "", "", "", `${endDate}`],
         datasets: [
             {
                 data: userDance,
@@ -57,6 +57,7 @@ export default function MoodChart({ userDance, userEnergy, userValence, userDate
   height={220}
   chartConfig={chartConfig}
   withShadow={false}
+  withOuterLines={false}
   fromZero={true}
 />
 </View>
