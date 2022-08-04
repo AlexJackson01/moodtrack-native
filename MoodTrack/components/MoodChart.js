@@ -14,28 +14,26 @@ import {
 
 export default function MoodChart({ userDance, userEnergy, userValence, userDate, endDate }) {
 
-    const screenWidth = Dimensions.get("window").width;
-
     const data = {
         labels: [`${userDate}`, "", "", "", "", `${endDate}`],
         datasets: [
             {
                 data: userDance,
-                strokeWidth: 2,
+                strokeWidth: 4,
                 color: (opacity = 1) => `rgba(255,87,100,${opacity})`, // optional
             },
             {
                 data: userEnergy,
-                strokeWidth: 2,
+                strokeWidth: 4,
                 color: (opacity = 1) => `rgba(98,232,152, ${opacity})`, // optional
             },
             {
                 data: userValence,
-                strokeWidth: 2,
+                strokeWidth: 4,
                 color: (opacity = 1) => `rgba(76,207,252, ${opacity})`, // optional
             },
         ],
-        // legend: ["Rainy Days"] // optional
+        legend: ["Danceability", "Energy", "Valence"] // optional
       };
 
       const chartConfig = {
@@ -43,9 +41,9 @@ export default function MoodChart({ userDance, userEnergy, userValence, userDate
         backgroundGradientFromOpacity: 0,
         backgroundGradientTo: "#FFFCEF",
         // backgroundGradientToOpacity: 0.5,
-        color: (opacity = 1) => `#8C52FF`,
-        strokeWidth: 2, // optional, default 3
-        barPercentage: 0.5,
+        color: (opacity = 1) => `#000`,
+        strokeWidth: 3, // optional, default 3
+        barPercentage: 1,
         useShadowColorFromDataset: false // optional
       };
 
@@ -55,10 +53,11 @@ export default function MoodChart({ userDance, userEnergy, userValence, userDate
 <View>
 <LineChart
   data={data}
-  width={350}
+  width={325}
   height={220}
   chartConfig={chartConfig}
   withShadow={false}
+  fromZero={true}
 />
 </View>
 
