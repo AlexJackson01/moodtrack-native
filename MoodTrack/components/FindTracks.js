@@ -113,7 +113,8 @@ export default function FindTracks({ token, setToken, setUserId, userId, setUser
     const getDate = () => {
       let nowDate = new Date(); 
       let date = nowDate.getDate()+'/'+(nowDate.getMonth()+1)+'/'+nowDate.getFullYear();
-      return date; 
+      let formatDate = date.moment().format("Do MMMM, YYYY");
+      return formatDate; 
     }
 
     const addLatestSong = (filtered) => {

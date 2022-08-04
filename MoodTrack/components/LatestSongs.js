@@ -81,8 +81,13 @@ export default function LatestSongs({ token, setToken, setUserId, userId, userNa
             querySnapshot.forEach((doc) => {
                 items.push(doc.data());
             })
-            // items.sort(date);
-            setLatestSongs(items); 
+            if (items.length <= 100) {
+              setLatestSongs(items); 
+            } else {
+              let diff = items.length - 100;
+              setLatestSongs(items.slice(0, diff));
+            }
+             // items.sort(date);
             // setLoading(false);
         })
 
