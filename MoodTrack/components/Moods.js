@@ -12,7 +12,16 @@ import { Button, DataTable } from 'react-native-paper';
 import { Audio } from 'expo-av';
 import {useNavigation} from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+import MoodChart from './MoodChart';
+import {
+    LineChart,
+    BarChart,
+    PieChart,
+    ProgressChart,
+    ContributionGraph,
+    StackedBarChart
+  } from "react-native-chart-kit";
+
 
 
 // import Light from '../assets/RobotoSlab_Light.ttf';
@@ -23,9 +32,10 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
     const [userDance, setUserDance] = useState([]);
     const [userEnergy, setUserEnergy] = useState([]);
     const [userValence, setUserValence] = useState([]);
-    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+    const [showChart, setShowChart] = useState(false);
     const [userDate, setUserDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
+    
 
 
     const navigation = useNavigation();
@@ -34,25 +44,6 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
         setToken("");
         navigation.navigate('Login');    
     }
-
-    const showDatePicker = () => {
-        setDatePickerVisibility(true);
-      };
-    
-      const hideDatePicker = () => {
-        setDatePickerVisibility(false);
-      };
-    
-      const handleConfirm = (date) => {
-        let dateArr = date.toLocaleDateString().split("/");
-        let engDate = [];
-        engDate.push(dateArr[1], dateArr[0], dateArr[2]);
-        setUserDate(engDate.join("/"));
-        const sevenDay = Number(engDate[0]) + 7;
-        setEndDate(`${sevenDay}/${engDate[1]}/${engDate[2]}`);
-        console.log(endDate);
-        hideDatePicker();
-      };
 
     const getMoods = () => {
       const ref = firebase.firestore().collection("Moods");
@@ -90,11 +81,27 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
             setUserValence(valence);
     }
 
+    const createChart = (e) => {
+        const data = {
+            labels: ["January", "February", "March", "April", "May", "June"],
+            datasets: [
+              {
+                data: [20, 45, 28, 80, 99, 43],
+                color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
+                strokeWidth: 2 // optional
+              }
+            ],
+            legend: ["Rainy Days"] // optional
+          };
+
+          setShowChart(true);
+    }
+
 
 
     useEffect(() => {
       getMoods();
-    }, [userName])
+    }, [])
     
     
 
@@ -111,23 +118,17 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
                 <View style={styles.centreContent}>
                     <Text style={styles.moodText}>7-Day MoodTracking {userDate ? (<Text>from {userDate} to {endDate}</Text>) : null}</Text>
                     {userName ? <Text style={styles.moodText}></Text> : null}
-                    <Button onPress={showDatePicker}>Choose Start Date</Button>
-                    <DateTimePickerModal
-                        isVisible={isDatePickerVisible}
-                        mode="date"
-                        onConfirm={handleConfirm}
-                        onCancel={hideDatePicker}
-                        dateFormat="date month year"
-                        // display="spinner"
-                    />
+                    {/* <Button style={{marginTop: -80, marginBottom: 50}} onPress={showDatePicker}>Choose Start Date</Button> */}
+                    {showChart ? <MoodChart />                 
+                     : <Text>Chart pending</Text>}
                         {moods ? (userValence.map((track, i) => (
                           <View key={i}>
                             </View>
                     ))) : <Text style={styles.secondaryText}>No moods input yet!</Text>}
                     {/* </ScrollView> */}
-                    {/* <Button icon="brain" style={{marginTop: 25, marginBottom: 10}} size={20} labelStyle={{fontFamily: 'RobotoSlabReg', fontSize: 12}} uppercase={false} color="#8C52FF" mode="contained" onPress={(e) => createPlaylist(e)} >
+                    <Button icon="brain" style={{marginTop: 25, marginBottom: 10}} size={20} labelStyle={{fontFamily: 'RobotoSlabReg', fontSize: 12}} uppercase={false} color="#8C52FF" mode="contained" onPress={(e) => createChart(e)} >
                         Generate Mood Chart
-                    </Button> */}
+                    </Button>
                     </View>
                 </View>
                 </LinearGradient>   
