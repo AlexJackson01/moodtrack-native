@@ -13,6 +13,7 @@ import { Button } from 'react-native-paper';
 import { Audio } from 'expo-av';
 import {useNavigation} from '@react-navigation/native';
 import { doc, setDoc } from 'firebase/firestore';
+import moment from 'moment';
 
 
 export default function FindTracks({ token, setToken, setUserId, userId, setUserName, setSongPreview, setSongRecommendation, songRecommendation }) {
@@ -111,9 +112,8 @@ export default function FindTracks({ token, setToken, setUserId, userId, setUser
     }
 
     const getDate = () => {
-      let nowDate = new Date(); 
-      let date = nowDate.getDate()+'/'+(nowDate.getMonth()+1)+'/'+nowDate.getFullYear();
-      let formatDate = date.moment().format("Do MMMM, YYYY");
+
+      let formatDate = moment().format("D MMM YYYY");
       return formatDate; 
     }
 
