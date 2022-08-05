@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, KeyboardAvoidingView, TouchableOpacity, AppState } from 'react-native';
+import { StyleSheet, Text, View, Image, KeyboardAvoidingView, TouchableOpacity, BackHandler } from 'react-native';
 import EventEmitter from "react-native/Libraries/vendor/emitter/EventEmitter";
 import { ResponseType, useAuthRequest, makeRedirectUri } from 'expo-auth-session';
 // import { AuthSession } from 'expo';
@@ -64,6 +64,9 @@ export default function Login({ setToken, token }) {
         const subscription = emitter.addListener('eventname', () => {});
         
         subscription.remove(); 
+
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true)
+        return () => backHandler.remove()
         
 
       }, [response]);

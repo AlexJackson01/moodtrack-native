@@ -64,9 +64,7 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
             querySnapshot.forEach((doc) => {
                 items.push(doc.data());
             })
-            let pos = items.findIndex((e) => (e.date === userDate));
-            let weekSplice = items.splice(pos, 7);
-            setMoods(weekSplice); 
+            setMoods(items); 
             console.log(moods);
             // setLoading(false);
         })
@@ -78,6 +76,12 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
         } catch (error) {
                 console.log(error.message)
         }
+
+        let pos = moods.findIndex((e) => (e.date === userDate));
+        console.log(pos);
+        // moods.splice(pos, 7);
+        setMoods(moods.splice(pos, 7));
+        console.log(moods);
 
         let dance = [];
         let energy = [];

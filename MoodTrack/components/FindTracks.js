@@ -4,7 +4,7 @@ import axios from 'axios';
 import firebase from '../firebase/firebase.js';
 import { db } from '../firebase/firebase.js';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, Linking, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, Linking, TouchableOpacity, BackHandler } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Emoji from 'react-native-emoji';
 import { useFonts } from 'expo-font';
@@ -177,6 +177,9 @@ export default function FindTracks({ token, setToken, setUserId, userId, setUser
 
     useEffect(() => {
             findTracks();
+
+            const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true)
+            return () => backHandler.remove()
     }, [])   
 
     const [loaded] = useFonts({
