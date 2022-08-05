@@ -126,7 +126,7 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
                 </View>
             <View style={styles.container}>
                 <View style={styles.centreContent}>
-                    <Text style={styles.moodText}>7-Day MoodTracking{"\n"}{userDate ? (<Text style={styles.secondaryText}>from {userDate} to {endDate}</Text>) : null}</Text>
+                    <Text style={styles.moodText}>7-Day MoodTracking{"\n"}{userDate.length > 0 ? (<Text style={styles.secondaryText}>from {userDate} to {endDate}</Text>) : null}</Text>
                     <Button style={{marginTop: -20, marginBottom: 40}} onPress={() => {setShowCalendar(true); setShowChart(false)}}>Choose Start Date</Button>
                     {showCalendar ? <CalendarPicker width={300} selectedDayColor="#8C52FF" selectedDayTextColor="white" textStyle={{fontFamily: 'RobotoSlabReg'}} onDateChange={(date, type) => onDateChange(date, type)} /> : null}
                     {userName ? <Text style={styles.moodText}></Text> : null}

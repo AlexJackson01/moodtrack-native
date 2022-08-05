@@ -112,7 +112,6 @@ export default function FindTracks({ token, setToken, setUserId, userId, setUser
     }
 
     const getDate = () => {
-
       let formatDate = moment().format("D MMM YYYY");
       return formatDate; 
     }
