@@ -59,13 +59,15 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
       const ref = firebase.firestore().collection("Moods");
 
       try {
-        ref.where("user", "==", userId).onSnapshot((querySnapshot) => { 
+        ref.where("user", "==", userId).orderBy("date", "asc").onSnapshot((querySnapshot) => { 
             const items = [];
             querySnapshot.forEach((doc) => {
                 items.push(doc.data());
             })
-            // items.sort(date);
-            setMoods(items); 
+            let pos = items.findIndex((e) => (e.date === userDate));
+            let weekSplice = items.splice(pos, 7);
+            setMoods(weekSplice); 
+            console.log(moods);
             // setLoading(false);
         })
 

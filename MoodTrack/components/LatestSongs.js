@@ -119,7 +119,7 @@ export default function LatestSongs({ token, setToken, setUserId, userId, userNa
                 <View style={styles.centreContent}>
                     {userName ? <Text style={styles.moodText}>Latest MoodTracks for {userName}</Text> : null}
                     {/* <ScrollView> */}
-                        {latestSongs ? (latestSongs.slice(-3).map((track) => (
+                        {latestSongs ? (latestSongs.slice(0, 3).map((track) => (
                           <View key={track.id} style={{display: 'flex', flexDirection: 'row', margin: 10}}>
                             <Image style={{height: 50, width: 50, marginRight: 5}} source={{uri: track.image}} />
                             <Text style={styles.secondaryText}>{track.track_name}{"\n"}{track.artists}</Text>
