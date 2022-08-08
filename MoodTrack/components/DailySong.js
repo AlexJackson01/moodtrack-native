@@ -69,7 +69,7 @@ export default function DailySong({ token, setToken, latestSongs, songRecommenda
                     )}
                     </View>
                     <Text style={styles.secondaryText}>Listen in full on</Text>
-                    <TouchableOpacity onPress={() => navigation.navigate(songRecommendation.external)}>
+                    <TouchableOpacity onPress={() => Linking.openURL(songRecommendation.external)}>
                         <Image style={styles.spotifyLogo} source={require('../images/Spotify_Logo.png')} />
                     </TouchableOpacity>
                     </View>
