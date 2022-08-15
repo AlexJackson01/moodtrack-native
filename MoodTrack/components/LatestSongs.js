@@ -76,19 +76,27 @@ export default function LatestSongs({ token, setToken, setUserId, userId, userNa
       const ref = firebase.firestore().collection("LatestSongs");
 
       try {
-        ref.where("user", "==", userId).orderBy("date", "desc").onSnapshot((querySnapshot) => { 
+        ref.where("user", "==", userId).onSnapshot((querySnapshot) => { 
             const items = [];
             querySnapshot.forEach((doc) => {
                 items.push(doc.data());
             })
+            for (let track of items) {
+              track.date = new Date(track.date).toISOString();
+            }
+            console.log(items);
+            // orderBy("date", "desc") NOT WORKING
+            items.sort((a, b) => a.date > b.date ? -1 : 1);
+            console.log(items);
+            // loops through and set strings to dates
             if (items.length <= 100) {
               setLatestSongs(items); 
             } else {
               let diff = items.length - 100;
               setLatestSongs(items.slice(0, diff));
             }
-             // items.sort(date);
-            // setLoading(false);
+            console.log(latestSongs);
+          
         })
 
         if (LatestSongs.empty) {

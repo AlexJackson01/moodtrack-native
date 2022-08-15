@@ -68,10 +68,12 @@ export default function DailySong({ token, setToken, latestSongs, songRecommenda
                         </TouchableOpacity>
                     )}
                     </View>
+                    <View style={{marginTop: 10, textAlign: 'center'}}>
                     <Text style={styles.secondaryText}>Listen in full on</Text>
                     <TouchableOpacity onPress={() => Linking.openURL(songRecommendation.external)}>
                         <Image style={styles.spotifyLogo} source={require('../images/Spotify_Logo.png')} />
                     </TouchableOpacity>
+                    </View>
                     </View>
 
                     </View>
@@ -140,6 +142,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 5,
     fontFamily: 'RobotoSlabReg',
+    textAlign: 'center', 
   },
   spotifyLogo: {
     height: 40,

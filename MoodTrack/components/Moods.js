@@ -28,6 +28,7 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
     const [userValence, setUserValence] = useState([]);
     const [showChart, setShowChart] = useState(false);
     const [showCalendar, setShowCalendar] = useState(false);
+    const [convertedDate, setConvertedDate] = useState("");
     const [userDate, setUserDate] = useState([]);
     const [endDate, setEndDate] = useState(null);
     
@@ -41,16 +42,19 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
     }
 
     const onDateChange = (date, type) => {
+
+      let selectedDate = date.toISOString().replace("11", "23");
+      console.log(selectedDate);
+      setUserDate(selectedDate);
+
         let dateArr = date.toString().split(" ");
         let engDate = [];
         engDate.push(Number(dateArr[2]), dateArr[1], dateArr[3]);
-        setUserDate(engDate.join(" "));
-
+        setConvertedDate(engDate.join(" "));
         let sevenDay = Number(engDate[0]) + 7;
         console.log(sevenDay);
         setEndDate(`${sevenDay} ${dateArr[1]} ${dateArr[3]}`)
         setShowCalendar(false);
-        // console.log(userDate);
         console.log(endDate);
 
     }
@@ -59,15 +63,23 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
       const ref = firebase.firestore().collection("Moods");
 
       try {
-        ref.where("user", "==", userId).orderBy("date", "asc").onSnapshot((querySnapshot) => { 
+        ref.where("user", "==", userId).onSnapshot((querySnapshot) => { 
             const items = [];
             querySnapshot.forEach((doc) => {
                 items.push(doc.data());
             })
+            for (let mood of items) {
+              mood.date = new Date(mood.date).toISOString();
+            }
+            // console.log(items);
+            items.sort((a, b) => a.date > b.date ? 1 : -1);
+            console.log(items);
+
             let pos = items.findIndex((e) => (e.date === userDate));
             console.log(pos);
-            // moods.splice(pos, 7);
-            setMoods(items.splice(pos, 7));
+            let index = pos + 7;
+            console.log(index);
+            setMoods(items.splice(pos - 1, index));
             console.log(moods);
             // setLoading(false);
         })
@@ -131,7 +143,7 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
                 </View>
             <View style={styles.container}>
                 <View style={styles.centreContent}>
-                    <Text style={styles.moodText}>7-Day MoodTracking{"\n"}{userDate.length > 0 ? (<Text style={styles.secondaryText}>from {userDate} to {endDate}</Text>) : null}</Text>
+                    <Text style={styles.moodText}>7-Day MoodTracking{"\n"}{userDate.length > 0 ? (<Text style={styles.secondaryText}>from {convertedDate} to {endDate}</Text>) : null}</Text>
                     <Button style={{marginTop: -20, marginBottom: 40}} onPress={() => {setShowCalendar(true); setShowChart(false)}}>Choose Start Date</Button>
                     {showCalendar ? <CalendarPicker width={300} selectedDayColor="#8C52FF" selectedDayTextColor="white" textStyle={{fontFamily: 'RobotoSlabReg'}} onDateChange={(date, type) => onDateChange(date, type)} /> : null}
                     {userName ? <Text style={styles.moodText}></Text> : null}
