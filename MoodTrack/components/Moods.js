@@ -47,16 +47,41 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
       console.log(selectedDate);
       setUserDate(selectedDate);
 
-        let dateArr = date.toString().split(" ");
-        let engDate = [];
-        engDate.push(Number(dateArr[2]), dateArr[1], dateArr[3]);
-        setConvertedDate(engDate.join(" "));
-        let sevenDay = Number(engDate[0]) + 7;
-        console.log(sevenDay);
-        setEndDate(`${sevenDay} ${dateArr[1]} ${dateArr[3]}`)
-        setShowCalendar(false);
-        console.log(endDate);
+      let dateArr = date.toString().split(" ");
+      let engDate = [];
+      engDate.push(Number(dateArr[2]), dateArr[1], dateArr[3]);
+      setConvertedDate(engDate.join(" "));
+      let sevenDay = Number(engDate[0]) + 6;
+      console.log(sevenDay);
+      setEndDate(`${sevenDay} ${dateArr[1]} ${dateArr[3]}`)
+      setShowCalendar(false);
+      console.log(endDate);
 
+      splitBy7();
+
+    }
+
+    const splitBy7 = () => {
+      let pos = moods.findIndex((e) => (e.date === userDate));
+      console.log(pos);
+      let index = pos + 6;
+      console.log(index);
+      setMoods(moods.splice(pos - 1, index));
+      console.log(moods);
+
+      let dance = [];
+      let energy = [];
+      let valence = [];
+
+      for (let mood of moods) {
+          dance.push(mood.dance * 10);
+          energy.push(mood.energy * 10);
+          valence.push(mood.valence * 10);
+      }
+          setUserDance(dance);
+          setUserEnergy(energy);
+          setUserValence(valence);
+      console.log(userValence);
     }
 
     const getMoods = () => {
@@ -74,13 +99,8 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
             // console.log(items);
             items.sort((a, b) => a.date > b.date ? 1 : -1);
             console.log(items);
+            setMoods(items);
 
-            let pos = items.findIndex((e) => (e.date === userDate));
-            console.log(pos);
-            let index = pos + 7;
-            console.log(index);
-            setMoods(items.splice(pos - 1, index));
-            console.log(moods);
             // setLoading(false);
         })
 
@@ -91,21 +111,6 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
         } catch (error) {
                 console.log(error.message)
         }
-
-
-
-        let dance = [];
-        let energy = [];
-        let valence = [];
-
-        for (let mood of moods) {
-            dance.push(mood.dance * 10);
-            energy.push(mood.energy * 10);
-            valence.push(mood.valence * 10);
-        }
-            setUserDance(dance);
-            setUserEnergy(energy);
-            setUserValence(valence);
     }
 
     const createChart = (e) => {

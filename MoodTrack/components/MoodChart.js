@@ -32,6 +32,14 @@ export default function MoodChart({ userDance, userEnergy, userValence, userDate
                 strokeWidth: 4,
                 color: (opacity = 1) => `rgba(76,207,252, ${opacity})`, // optional
             },
+            {
+              data: [1],
+              withDots: false
+            },
+            {
+              data: [10],
+              withDots: false
+            }
         ],
         legend: ["Danceability", "Energy", "Valence"] // optional
       };
