@@ -90,7 +90,7 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
       let engDate = [];
       engDate.push(Number(dateArr[2]), dateArr[1], dateArr[3]);
       setConvertedDate(engDate.join(" "));
-      let sevenDay = Number(engDate[0]) + 7;
+      let sevenDay = Number(engDate[0]) + 6;
       setEndDate(`${sevenDay} ${dateArr[1]} ${dateArr[3]}`)
       setShowCalendar(false);
 
