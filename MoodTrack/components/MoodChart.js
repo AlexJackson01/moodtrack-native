@@ -12,7 +12,7 @@ import {
 
 
 
-export default function MoodChart({ userDance, userEnergy, userValence, userDate, endDate }) {
+export default function MoodChart({ userDance, userEnergy, userValence, convertedDate, endDate }) {
 
     const data = {
         labels: ["", "", "", "", "", "", ""],

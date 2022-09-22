@@ -217,6 +217,7 @@ export default function FindTracks({ token, setToken, setUserId, userId, setUser
                         thumbTintColor="#7E71F5"
                         maximumTrackTintColor="#000000"
                         onValueChange={value => setDance(value / 10)}
+                        onSlidingComplete={value => setDance(value / 10)}
                     />
                     <Emoji name="dancer" style={{fontSize: 30}} />
                     </View>
@@ -231,6 +232,7 @@ export default function FindTracks({ token, setToken, setUserId, userId, setUser
                         thumbTintColor="#7E71F5"
                         maximumTrackTintColor="#000000"
                         onValueChange={value => setEnergy(value / 10)}
+                        onSlidingComplete={value => setEnergy(value / 10)}
                     />
                     <Emoji name="swimmer" style={{fontSize: 30}} />
                     </View>
@@ -245,6 +247,7 @@ export default function FindTracks({ token, setToken, setUserId, userId, setUser
                         thumbTintColor="#7E71F5"
                         maximumTrackTintColor="#000000"
                         onValueChange={value => setValence(value / 10)}
+                        onSlidingComplete={value => setValence(value / 10)}
                     />
                     <Emoji name="grin" style={{fontSize: 30}} />
                     </View>

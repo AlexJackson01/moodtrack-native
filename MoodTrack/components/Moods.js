@@ -41,6 +41,35 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
         navigation.navigate('Login');    
     }
 
+    const getMoods = () => {
+      const ref = firebase.firestore().collection("Moods");
+
+      try {
+        ref.where("user", "==", userId).onSnapshot((querySnapshot) => { 
+            const items = [];
+            querySnapshot.forEach((doc) => {
+                items.push(doc.data());
+                console.log(items);
+            })
+            // for (let mood of items) {
+            //   mood.date = new Date(mood.date).toISOString();
+            // }
+            // items.sort((a, b) => a.date > b.date ? 1 : -1);
+            // console.log(items);
+            // setMoods(items);
+
+            // setLoading(false);
+        })
+
+        if (Moods.empty) {
+                console.log("no matches");
+                // setLoading(false);
+            }
+        } catch (error) {
+                console.log(error.message)
+        }
+    }
+
     const onDateChange = (date, type) => {
 
       let selectedDate = date.toISOString().replace("11", "23");
@@ -64,7 +93,7 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
     const splitBy7 = () => {
       let pos = moods.findIndex((e) => (e.date === userDate));
       console.log(pos);
-      let index = pos + 6;
+      let index = pos + 7;
       console.log(index);
       setMoods(moods.splice(pos - 1, index));
       console.log(moods);
@@ -82,35 +111,6 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
           setUserEnergy(energy);
           setUserValence(valence);
       console.log(userValence);
-    }
-
-    const getMoods = () => {
-      const ref = firebase.firestore().collection("Moods");
-
-      try {
-        ref.where("user", "==", userId).onSnapshot((querySnapshot) => { 
-            const items = [];
-            querySnapshot.forEach((doc) => {
-                items.push(doc.data());
-            })
-            for (let mood of items) {
-              mood.date = new Date(mood.date).toISOString();
-            }
-            // console.log(items);
-            items.sort((a, b) => a.date > b.date ? 1 : -1);
-            console.log(items);
-            setMoods(items);
-
-            // setLoading(false);
-        })
-
-        if (Moods.empty) {
-                console.log("no matches");
-                // setLoading(false);
-            }
-        } catch (error) {
-                console.log(error.message)
-        }
     }
 
     const createChart = (e) => {
@@ -133,7 +133,7 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
 
     useEffect(() => {
       getMoods();
-    }, [userDate])
+    }, [])
     
     
 
@@ -153,7 +153,7 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
                     {showCalendar ? <CalendarPicker width={300} selectedDayColor="#8C52FF" selectedDayTextColor="white" textStyle={{fontFamily: 'RobotoSlabReg'}} onDateChange={(date, type) => onDateChange(date, type)} /> : null}
                     {userName ? <Text style={styles.moodText}></Text> : null}
                     <View style={{marginTop: -100}}>
-                    {showChart ? <MoodChart userDance={userDance} userEnergy={userEnergy} userValence={userValence} userDate={userDate} endDate={endDate} />                 
+                    {showChart ? <MoodChart userDance={userDance} userEnergy={userEnergy} userValence={userValence} convertedDate={convertedDate} endDate={endDate} />                 
                      : null}
                     </View>
                     <Button icon="brain" style={{marginTop: 45, marginBottom: 10}} size={20} labelStyle={{fontFamily: 'RobotoSlabReg', fontSize: 12}} uppercase={false} color="#8C52FF" mode="contained" onPress={(e) => createChart(e)} >
