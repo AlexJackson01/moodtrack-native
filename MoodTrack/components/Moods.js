@@ -23,6 +23,7 @@ import CalendarPicker from 'react-native-calendar-picker';
 export default function Moods({ token, setToken, setUserId, userId, userName }) {
 
     const [moods, setMoods] = useState([]);
+    const [weekMood, setWeekMood] = useState([]);
     const [userDance, setUserDance] = useState([]);
     const [userEnergy, setUserEnergy] = useState([]);
     const [userValence, setUserValence] = useState([]);
@@ -49,14 +50,23 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
             const items = [];
             querySnapshot.forEach((doc) => {
                 items.push(doc.data());
-                console.log(items);
+                // console.log(items);
             })
-            // for (let mood of items) {
-            //   mood.date = new Date(mood.date).toISOString();
-            // }
-            // items.sort((a, b) => a.date > b.date ? 1 : -1);
+            for (let mood of items) {
+              mood.date = new Date(mood.date) + "00:00:00";
+              let splitDates = mood.date.split(" ");
+              let joinedDate = `${splitDates[2]} ${splitDates[1]} ${splitDates[3]}`
+              mood.date = joinedDate;
+              // mood.date = mood.date.toISOString();
+            }
             // console.log(items);
-            // setMoods(items);
+
+            items.sort((a, b) => a.date > b.date ? 1 : -1);
+            // console.log(items);
+
+            setMoods(items);
+            // console.log(moods);
+
 
             // setLoading(false);
         })
@@ -72,70 +82,72 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
 
     const onDateChange = (date, type) => {
 
-      let selectedDate = date.toISOString().replace("11", "23");
-      console.log(selectedDate);
-      setUserDate(selectedDate);
+      // let selectedDate = date.toISOString();
+      // console.log(selectedDate);
+      // setUserDate(selectedDate);
 
       let dateArr = date.toString().split(" ");
       let engDate = [];
       engDate.push(Number(dateArr[2]), dateArr[1], dateArr[3]);
       setConvertedDate(engDate.join(" "));
-      let sevenDay = Number(engDate[0]) + 6;
-      console.log(sevenDay);
+      let sevenDay = Number(engDate[0]) + 7;
       setEndDate(`${sevenDay} ${dateArr[1]} ${dateArr[3]}`)
       setShowCalendar(false);
-      console.log(endDate);
-
-      splitBy7();
 
     }
 
-    const splitBy7 = () => {
-      let pos = moods.findIndex((e) => (e.date === userDate));
-      console.log(pos);
-      let index = pos + 7;
-      console.log(index);
-      setMoods(moods.splice(pos - 1, index));
-      console.log(moods);
+    const split7Day = (e) => {
 
+        let pos = moods.findIndex((e) => (e.date === convertedDate));
+        console.log(pos);
+        let index = pos + 7;
+        setWeekMood(moods.splice(pos, index));
+        console.log(weekMood);
+
+
+        // console.log(weekMood);
+
+    }
+
+    const createChart = () => {
       let dance = [];
       let energy = [];
       let valence = [];
+            for (let mood of weekMood) {
+            dance.push(mood.dance * 10);
+            energy.push(mood.energy * 10);
+            valence.push(mood.valence * 10);
+        }
+            setUserDance(dance.splice(0, 7));
+            setUserEnergy(energy.splice(0, 7));
+            setUserValence(valence.splice(0, 7));
+        console.log(userValence);
 
-      for (let mood of moods) {
-          dance.push(mood.dance * 10);
-          energy.push(mood.energy * 10);
-          valence.push(mood.valence * 10);
-      }
-          setUserDance(dance);
-          setUserEnergy(energy);
-          setUserValence(valence);
-      console.log(userValence);
-    }
 
-    const createChart = (e) => {
-        const data = {
-            labels: ["January", "February", "March", "April", "May", "June"],
-            datasets: [
-              {
-                data: [20, 45, 28, 80, 99, 43],
-                color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
-                strokeWidth: 2 // optional
-              }
-            ],
-            legend: ["Rainy Days"] // optional
-          };
+        // const data = {
+        //     labels: ["January", "February", "March", "April", "May", "June"],
+        //     datasets: [
+        //       {
+        //         data: [20, 45, 28, 80, 99, 43],
+        //         color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
+        //         strokeWidth: 2 // optional
+        //       }
+        //     ],
+        //     legend: ["Rainy Days"] // optional
+        //   };
 
-          setShowChart(true);
+        // setShowChart(true);
     }
 
 
 
     useEffect(() => {
       getMoods();
-    }, [])
+    }, [convertedDate])
     
-    
+    useEffect(() => {
+      createChart();
+    }, [weekMood])
 
 
   return (
@@ -148,15 +160,15 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
                 </View>
             <View style={styles.container}>
                 <View style={styles.centreContent}>
-                    <Text style={styles.moodText}>7-Day MoodTracking{"\n"}{userDate.length > 0 ? (<Text style={styles.secondaryText}>from {convertedDate} to {endDate}</Text>) : null}</Text>
+                    <Text style={styles.moodText}>7-Day MoodTracking{"\n"}{convertedDate.length > 0 ? (<Text style={styles.secondaryText}>from {convertedDate} to {endDate}</Text>) : null}</Text>
                     <Button style={{marginTop: -20, marginBottom: 40}} onPress={() => {setShowCalendar(true); setShowChart(false)}}>Choose Start Date</Button>
                     {showCalendar ? <CalendarPicker width={300} selectedDayColor="#8C52FF" selectedDayTextColor="white" textStyle={{fontFamily: 'RobotoSlabReg'}} onDateChange={(date, type) => onDateChange(date, type)} /> : null}
                     {userName ? <Text style={styles.moodText}></Text> : null}
                     <View style={{marginTop: -100}}>
-                    {showChart ? <MoodChart userDance={userDance} userEnergy={userEnergy} userValence={userValence} convertedDate={convertedDate} endDate={endDate} />                 
+                    {showChart ? <MoodChart weekMood={weekMood} userDance={userDance} userEnergy={userEnergy} userValence={userValence} convertedDate={convertedDate} endDate={endDate} />                 
                      : null}
                     </View>
-                    <Button icon="brain" style={{marginTop: 45, marginBottom: 10}} size={20} labelStyle={{fontFamily: 'RobotoSlabReg', fontSize: 12}} uppercase={false} color="#8C52FF" mode="contained" onPress={(e) => createChart(e)} >
+                    <Button icon="brain" style={{marginTop: 45, marginBottom: 10}} size={20} labelStyle={{fontFamily: 'RobotoSlabReg', fontSize: 12}} uppercase={false} color="#8C52FF" mode="contained" onPress={(e) => {split7Day(e); setShowChart(true)}} >
                         Generate Mood Chart
                     </Button>
                     </View>

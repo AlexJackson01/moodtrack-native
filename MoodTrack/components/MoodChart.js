@@ -15,7 +15,7 @@ import {
 export default function MoodChart({ userDance, userEnergy, userValence, convertedDate, endDate }) {
 
     const data = {
-        labels: ["", "", "", "", "", "", ""],
+        labels: [`${convertedDate}`, "", "", "", "", "", `${endDate}`],
         datasets: [
             {
                 data: userDance,
