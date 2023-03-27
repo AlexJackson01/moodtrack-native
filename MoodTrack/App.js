@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { TokenProvider } from './context/TokenContext'
 import { StatusBar } from 'expo-status-bar'
 import { StyleSheet, Text, View, ScrollView } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
@@ -10,10 +11,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { Provider as PaperProvider } from 'react-native-paper'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Login from './components/login/Login'
-import FindTracks from './components/FindTracks'
-import LatestSongs from './components/LatestSongs'
-import DailySong from './components/DailySong'
-import Moods from './components/Moods'
+import FindTracks from './components/findTracks/FindTracks'
+import LatestSongs from './components/latestSongs/LatestSongs'
+import DailySong from './components/dailySong/DailySong'
+import Moods from './components/moods/Moods'
 import Resources from './components/Resources'
 import LoginPage from './screens/LoginPage'
 
@@ -21,7 +22,6 @@ const Stack = createStackNavigator()
 const Tab = createBottomTabNavigator()
 
 export default function App ({ navigation }) {
-  const [token, setToken] = useState('')
   const [trackList, setTrackList] = useState([])
   const [songRecommendation, setSongRecommendation] = useState([])
   const [songPreview, setSongPreview] = useState(null)
@@ -69,8 +69,6 @@ export default function App ({ navigation }) {
           options={{ headerShown: false }}
           children={() => (
             <LatestSongs
-              token={token}
-              setToken={setToken}
               setUserId={setUserId}
               userId={userId}
               setUserName={setUserName}
@@ -83,74 +81,70 @@ export default function App ({ navigation }) {
           options={{ headerShown: false }}
           children={() => (
             <Moods
-              token={token}
-              setToken={setToken}
               userId={userId}
               userName={userName}
             />
           )}
         />
-        <Tab.Screen
+        {/* <Tab.Screen
           name='Resources'
           options={{ headerShown: false }}
           children={() => <Resources token={token} setToken={setToken} />}
-        />
+        /> */}
       </Tab.Navigator>
     )
   }
 
   return (
-    <NavigationContainer>
-      <PaperProvider>
-        <Stack.Navigator initialRouteName='Login'>
-          <Stack.Screen
-            name='Login'
-            options={{
-              headerShown: false,
-              cardStyleInterpolator:
-                CardStyleInterpolators.forFadeFromBottomAndroid
-            }}
-          >
-            {props => (
-              <LoginPage
-                {...props}
-                token={token}
-                setToken={setToken}
-                setTrackList={setTrackList}
-              />
-            )}
-          </Stack.Screen>
+    <TokenProvider>
+      <NavigationContainer>
+        <PaperProvider>
+          <Stack.Navigator initialRouteName='Login'>
+            <Stack.Screen
+              name='Login'
+              options={{
+                headerShown: false,
+                cardStyleInterpolator:
+                  CardStyleInterpolators.forFadeFromBottomAndroid
+              }}
+            >
+              {props => (
+                <LoginPage
+                  {...props}
+                  setTrackList={setTrackList}
+                />
+              )}
+            </Stack.Screen>
 
-          <Stack.Screen
-            name='Find'
-            options={{
-              headerShown: false,
-              cardStyleInterpolator:
-                CardStyleInterpolators.forFadeFromBottomAndroid
-            }}
-          >
-            {props => (
-              <FindTracks
-                {...props}
-                token={token}
-                setToken={setToken}
-                songRecommendation={songRecommendation}
-                setSongRecommendation={setSongRecommendation}
-                setSongPreview={setSongPreview}
-                userId={userId}
-                setUserId={setUserId}
-                setUserName={setUserName}
-              />
-            )}
-          </Stack.Screen>
+            <Stack.Screen
+              name='Find'
+              options={{
+                headerShown: false,
+                cardStyleInterpolator:
+                  CardStyleInterpolators.forFadeFromBottomAndroid
+              }}
+            >
+              {props => (
+                <FindTracks
+                  {...props}
+                  songRecommendation={songRecommendation}
+                  setSongRecommendation={setSongRecommendation}
+                  setSongPreview={setSongPreview}
+                  userId={userId}
+                  setUserId={setUserId}
+                  setUserName={setUserName}
+                />
+              )}
+            </Stack.Screen>
 
-          <Stack.Screen
-            name='Music'
-            options={{ headerShown: false }}
-            component={NavTabs}
-          />
-        </Stack.Navigator>
-      </PaperProvider>
-    </NavigationContainer>
+            <Stack.Screen
+              name='Music'
+              options={{ headerShown: false }}
+              component={NavTabs}
+            />
+          </Stack.Navigator>
+        </PaperProvider>
+      </NavigationContainer>
+    </TokenProvider>
   )
 }

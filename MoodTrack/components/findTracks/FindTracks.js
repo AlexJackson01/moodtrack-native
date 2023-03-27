@@ -1,8 +1,9 @@
 import * as React from 'react'
+import { useToken } from '../../context/TokenContext.js'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import firebase from '../firebase/firebase.js'
-import { db } from '../firebase/firebase.js'
+import firebase from '../../firebase/firebase.js'
+import { db } from '../../firebase/firebase.js'
 import { StatusBar } from 'expo-status-bar'
 import {
   StyleSheet,
@@ -24,8 +25,6 @@ import { doc, setDoc } from 'firebase/firestore'
 import moment from 'moment'
 
 export default function FindTracks ({
-  token,
-  setToken,
   setUserId,
   userId,
   setUserName,
@@ -33,6 +32,7 @@ export default function FindTracks ({
   setSongRecommendation,
   songRecommendation
 }) {
+  const [token, setToken] = useToken()
   const [showTrack, setShowTrack] = useState(false)
   const [dance, setDance] = useState(0.0)
   const [energy, setEnergy] = useState(0.0)
@@ -204,8 +204,8 @@ export default function FindTracks ({
   }, [])
 
   const [loaded] = useFonts({
-    RobotoSlabLight: require('../assets/fonts/RobotoSlab-Light.ttf'),
-    RobotoSlabReg: require('../assets/fonts/RobotoSlab-Regular.ttf')
+    RobotoSlabLight: require('../../assets/fonts/RobotoSlab-Light.ttf'),
+    RobotoSlabReg: require('../../assets/fonts/RobotoSlab-Regular.ttf')
   })
 
   if (!loaded) {
@@ -216,15 +216,15 @@ export default function FindTracks ({
     <LinearGradient colors={['#7e71f5', '#9f6ad6']} style={styles.body}>
       <Image
         style={styles.moodtrackLogoSmall}
-        source={require('../assets/images/MoodTrack_logo.png')}
+        source={require('../../assets/images/MoodTrack_logo.png')}
       />
-      <View style={{ position: 'absolute', top: 35, right: 5 }}>
+      {/* <View style={{ position: 'absolute', top: 35, right: 5 }}>
         <TouchableOpacity onPress={() => logout()}>
           <Button color='white' uppercase={false} style={{ color: 'white' }}>
             Logout
           </Button>
         </TouchableOpacity>
-      </View>
+      </View> */}
       <View style={styles.container}>
         {!showTrack && trackList.length >= 1 && (
           <View style={styles.centreContent}>

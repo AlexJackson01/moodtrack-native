@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+import { useToken } from '../../context/TokenContext.js';
 import axios from 'axios';
-import firebase from '../firebase/firebase.js';
+import firebase from '../../firebase/firebase.js';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, FlatView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -16,9 +17,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 // import Light from '../assets/RobotoSlab_Light.ttf';
 
-export default function LatestSongs({ token, setToken, setUserId, userId, userName }) {
+export default function LatestSongs({ setUserId, userId, userName }) {
 
-    const [playlistId, setPlaylistId] = useState("");
+    const [token, setToken] = useToken()
+  const [playlistId, setPlaylistId] = useState("");
     const [confirmation, setConfirmation] = useState("");
     const [latestSongs, setLatestSongs] = useState([]);
 
@@ -117,12 +119,12 @@ export default function LatestSongs({ token, setToken, setUserId, userId, userNa
 
   return (
     <LinearGradient colors={['#7e71f5', '#9f6ad6']} style={styles.body}>
-        <Image style={styles.moodtrackLogoSmall} source={require('../assets/images/MoodTrack_logo.png')} />
-            <View style={{position: 'absolute', top: 35, right: 5}}>
+        <Image style={styles.moodtrackLogoSmall} source={require('../../assets/images/MoodTrack_logo.png')} />
+            {/* <View style={{position: 'absolute', top: 35, right: 5}}>
                 <TouchableOpacity onPress={() => logout()}>
                     <Button color="white" uppercase={false} style={{color: 'white'}}>Logout</Button>
                 </TouchableOpacity>
-                </View>
+                </View> */}
             <View style={styles.container}>
                 <View style={styles.centreContent}>
                     {userName ? <Text style={styles.moodText}>Latest MoodTracks for {userName}</Text> : null}
