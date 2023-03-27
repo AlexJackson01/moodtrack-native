@@ -50,7 +50,7 @@ export default function DailySong({ token, setToken, latestSongs, songRecommenda
 
   return (
     <LinearGradient colors={['#7e71f5', '#9f6ad6']} style={styles.body}>
-        <Image style={styles.moodtrackLogoSmall} source={require('../images/MoodTrack_logo.png')} />
+        <Image style={styles.moodtrackLogoSmall} source={require('../assets/images/MoodTrack_logo.png')} />
             <View style={{position: 'absolute', top: 35, right: 5}}>
                 <TouchableOpacity onPress={() => logout()}>
                     <Button color="white" uppercase={false} style={{color: 'white'}}>Logout</Button>
@@ -71,7 +71,7 @@ export default function DailySong({ token, setToken, latestSongs, songRecommenda
                     <View style={{marginTop: 10, textAlign: 'center'}}>
                     <Text style={styles.secondaryText}>Listen in full on</Text>
                     <TouchableOpacity onPress={() => Linking.openURL(songRecommendation.external)}>
-                        <Image style={styles.spotifyLogo} source={require('../images/Spotify_Logo.png')} />
+                        <Image style={styles.spotifyLogo} source={require('../assets/images/Spotify_Logo.png')} />
                     </TouchableOpacity>
                     </View>
                     </View>

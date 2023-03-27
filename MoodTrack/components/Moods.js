@@ -152,7 +152,7 @@ export default function Moods({ token, setToken, setUserId, userId, userName }) 
 
   return (
     <LinearGradient colors={['#7e71f5', '#9f6ad6']} style={styles.body}>
-        <Image style={styles.moodtrackLogoSmall} source={require('../images/MoodTrack_logo.png')} />
+        <Image style={styles.moodtrackLogoSmall} source={require('../assets/images/MoodTrack_logo.png')} />
             <View style={{position: 'absolute', top: 35, right: 5}}>
                 <TouchableOpacity onPress={() => logout()}>
                     <Button color="white" uppercase={false} style={{color: 'white'}}>Logout</Button>
