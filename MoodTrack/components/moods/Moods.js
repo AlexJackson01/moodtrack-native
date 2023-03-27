@@ -26,11 +26,7 @@ import CalendarPicker from 'react-native-calendar-picker'
 
 // import Light from '../assets/RobotoSlab_Light.ttf';
 
-export default function Moods ({
-  setUserId,
-  userId,
-  userName
-}) {
+export default function Moods ({ setUserId, userId, userName }) {
   const [token, setToken] = useToken()
   const [moods, setMoods] = useState([])
   const [weekMood, setWeekMood] = useState([])
@@ -47,7 +43,7 @@ export default function Moods ({
 
   const logout = () => {
     setToken(null)
-    setTimeout(() => navigation.navigate('Login', {token: null}), 20)
+    setTimeout(() => navigation.navigate('Login', { token: null }), 20)
   }
 
   const getMoods = () => {
@@ -124,7 +120,6 @@ export default function Moods ({
     setUserEnergy(energy.splice(0, 7))
     setUserValence(valence.splice(0, 7))
     console.log(userValence)
-
   }
 
   useEffect(() => {
@@ -169,13 +164,13 @@ export default function Moods ({
           </Button>
           {showCalendar ? (
             <View style={styles.calendarView}>
-            <CalendarPicker
-              width={300}
-              selectedDayColor='#8C52FF'
-              selectedDayTextColor='white'
-              textStyle={{ fontFamily: 'RobotoSlabReg' }}
-              onDateChange={(date, type) => onDateChange(date, type)}
-            />
+              <CalendarPicker
+                width={300}
+                selectedDayColor='#8C52FF'
+                selectedDayTextColor='white'
+                textStyle={{ fontFamily: 'RobotoSlabReg' }}
+                onDateChange={(date, type) => onDateChange(date, type)}
+              />
             </View>
           ) : null}
           {userName ? <Text style={styles.moodText}></Text> : null}

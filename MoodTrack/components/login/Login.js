@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useToken } from '../../context/TokenContext'
-import * as WebBrowser from 'expo-web-browser';
+import * as WebBrowser from 'expo-web-browser'
 
 import { StatusBar } from 'expo-status-bar'
 import {
@@ -22,7 +22,7 @@ import {
 import { useFonts } from 'expo-font'
 import { useNavigation } from '@react-navigation/native'
 
-WebBrowser.maybeCompleteAuthSession();
+WebBrowser.maybeCompleteAuthSession()
 
 const discovery = {
   authorizationEndpoint: 'https://accounts.spotify.com/authorize',
@@ -32,7 +32,7 @@ const discovery = {
 export default function Login () {
   const navigation = useNavigation()
 
-  const [token, setToken] = useToken();
+  const [token, setToken] = useToken()
 
   const [request, response, promptAsync] = useAuthRequest(
     {
@@ -63,9 +63,8 @@ export default function Login () {
       const { access_token } = response.params
       setToken(access_token)
       console.log(token)
-      setTimeout(() => navigation.navigate('Find', {token: access_token}), 20)
+      setTimeout(() => navigation.navigate('Find', { token: access_token }), 20)
     }
-
   }, [response])
 
   const [loaded] = useFonts({

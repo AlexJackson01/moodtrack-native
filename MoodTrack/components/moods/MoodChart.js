@@ -1,77 +1,85 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, KeyboardAvoidingView, TouchableOpacity, AppState, Dimensions } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { StatusBar } from 'expo-status-bar'
 import {
-    LineChart,
-    BarChart,
-    PieChart,
-    ProgressChart,
-    ContributionGraph,
-    StackedBarChart
-  } from "react-native-chart-kit";
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  KeyboardAvoidingView,
+  TouchableOpacity,
+  AppState,
+  Dimensions
+} from 'react-native'
+import { LinearGradient } from 'expo-linear-gradient'
+import {
+  LineChart,
+  BarChart,
+  PieChart,
+  ProgressChart,
+  ContributionGraph,
+  StackedBarChart
+} from 'react-native-chart-kit'
 
+export default function MoodChart ({
+  userDance,
+  userEnergy,
+  userValence,
+  convertedDate,
+  endDate
+}) {
+  const data = {
+    labels: [`${convertedDate}`, '', '', '', '', '', `${endDate}`],
+    datasets: [
+      {
+        data: userDance,
+        strokeWidth: 4,
+        color: (opacity = 1) => `rgba(255,87,100,${opacity})` // optional
+      },
+      {
+        data: userEnergy,
+        strokeWidth: 4,
+        color: (opacity = 1) => `rgba(98,232,152, ${opacity})` // optional
+      },
+      {
+        data: userValence,
+        strokeWidth: 4,
+        color: (opacity = 1) => `rgba(76,207,252, ${opacity})` // optional
+      },
+      {
+        data: [1],
+        withDots: false
+      },
+      {
+        data: [10],
+        withDots: false
+      }
+    ],
+    legend: ['Danceability', 'Energy', 'Valence'] // optional
+  }
 
+  const chartConfig = {
+    backgroundGradientFrom: '#FFFCEF',
+    backgroundGradientFromOpacity: 0,
+    backgroundGradientTo: '#FFFCEF',
+    // backgroundGradientToOpacity: 0.5,
+    color: (opacity = 1) => `#000`,
+    strokeWidth: 3, // optional, default 3
+    barPercentage: 1,
+    useShadowColorFromDataset: false // optional
+  }
 
-export default function MoodChart({ userDance, userEnergy, userValence, convertedDate, endDate }) {
-
-    const data = {
-        labels: [`${convertedDate}`, "", "", "", "", "", `${endDate}`],
-        datasets: [
-            {
-                data: userDance,
-                strokeWidth: 4,
-                color: (opacity = 1) => `rgba(255,87,100,${opacity})`, // optional
-            },
-            {
-                data: userEnergy,
-                strokeWidth: 4,
-                color: (opacity = 1) => `rgba(98,232,152, ${opacity})`, // optional
-            },
-            {
-                data: userValence,
-                strokeWidth: 4,
-                color: (opacity = 1) => `rgba(76,207,252, ${opacity})`, // optional
-            },
-            {
-              data: [1],
-              withDots: false
-            },
-            {
-              data: [10],
-              withDots: false
-            }
-        ],
-        legend: ["Danceability", "Energy", "Valence"] // optional
-      };
-
-      const chartConfig = {
-        backgroundGradientFrom: "#FFFCEF",
-        backgroundGradientFromOpacity: 0,
-        backgroundGradientTo: "#FFFCEF",
-        // backgroundGradientToOpacity: 0.5,
-        color: (opacity = 1) => `#000`,
-        strokeWidth: 3, // optional, default 3
-        barPercentage: 1,
-        useShadowColorFromDataset: false // optional
-      };
-
-
-  
   return (
-<View>
-<LineChart
-  data={data}
-  width={325}
-  height={220}
-  chartConfig={chartConfig}
-  withShadow={false}
-  withOuterLines={false}
-  fromZero={true}
-/>
-</View>
-
-
-  );
+    <View>
+      <LineChart
+        data={data}
+        width={325}
+        height={220}
+        chartConfig={chartConfig}
+        withShadow={false}
+        withOuterLines={false}
+        fromZero={true}
+      />
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -79,7 +87,7 @@ const styles = StyleSheet.create({
     flex: 1,
     // backgroundColor: 'linear-gradient(45deg, rgba(179,245,113,1), rgba(159,106,214,1))',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   container: {
     margin: 40,
@@ -93,9 +101,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     shadowColor: 'black',
     shadowOpacity: 1,
-    shadowOffset: {width: 2, height: 2},
+    shadowOffset: { width: 2, height: 2 },
     shadowRadius: 10,
-    elevation: 8,
+    elevation: 8
     // boxShadow: '1px 1px 0px #C7D0D8, 2px 2px 0px #C7D0D8, 3px 3px 0px #C7D0D8, 4px 4px 0px #C7D0D8, 5px 5px 0px #C7D0D8, 6px 6px 0px #C7D0D8, 7px 7px 0px #C7D0D8',
   },
   titleText: {
@@ -123,4 +131,4 @@ const styles = StyleSheet.create({
     width: 130,
     marginTop: 10
   }
-});
+})
