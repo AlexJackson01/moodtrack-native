@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import * as WebBrowser from 'expo-web-browser';
 import { StatusBar } from 'expo-status-bar'
 import {
   StyleSheet,
@@ -20,15 +19,15 @@ import {
 import { useFonts } from 'expo-font'
 import { useNavigation } from '@react-navigation/native'
 
-WebBrowser.maybeCompleteAuthSession();
-
 const discovery = {
   authorizationEndpoint: 'https://accounts.spotify.com/authorize',
   tokenEndpoint: 'https://accounts.spotify.com/api/token'
 }
 
-export default function Login ({ setToken, token }) {
+export default function Login () {
   const navigation = useNavigation()
+
+  const [token, setToken] = useState(null);
 
   const [request, response, promptAsync] = useAuthRequest(
     {
@@ -49,7 +48,7 @@ export default function Login ({ setToken, token }) {
       // to fetch token after authorizationEndpoint
       // this must be set to false
       usePKCE: false,
-      redirectUri: 'exp://192.168.1.90:19000/tracks'
+      redirectUri: 'exp://192.168.1.90:19000/'
     },
     discovery
   )
@@ -58,20 +57,10 @@ export default function Login ({ setToken, token }) {
     if (response?.type === 'success') {
       const { access_token } = response.params
       setToken(access_token)
+      console.log(token)
       navigation.navigate('Find')
     }
 
-    const emitter = new EventEmitter()
-
-    const subscription = emitter.addListener('eventname', () => {})
-
-    subscription.remove()
-
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      () => true
-    )
-    return () => backHandler.remove()
   }, [response])
 
   const [loaded] = useFonts({
